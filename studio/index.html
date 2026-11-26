@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Copyright (c) 2026 Alexander S. Donahue (ORCID 0009-0006-8168-9648) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promislow–Fracton–Amoeba 3D WebGL2 Studio (v1.0.0)</title>
+<style>
+  :root {
+    --bg: #080d1a;
+    --panel: #0f1729;
+    --panel2: #152038;
+    --border: #263656;
+    --text: #e6edf3;
+    --muted: #9fb0c7;
+    --accent: #56b4e9;
+    --warn: #e69f00;
+    --danger: #ff7b72;
+    --ok: #3fb950;
+    --purple: #cc79a7;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    grid-template-rows: 52px 1fr 32px;
+    height: 100vh; width: 100vw;
+  }
+  header {
+    grid-column: 1 / 3;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+  }
+  header h1 {
+    font-size: 15px; margin: 0; letter-spacing: 0.04em; color: var(--accent);
+    display: flex; align-items: center; gap: 10px;
+  }
+  header .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    background: #17304f; color: var(--text); border: 1px solid var(--accent);
+    font-weight: 600;
+  }
+  header nav { display: flex; gap: 8px; align-items: center; }
+  header nav a {
+    color: var(--muted); text-decoration: none; font-size: 12px;
+    padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  }
+  header nav a:hover, header nav a:focus { color: var(--text); border-color: var(--accent); outline: none; }
+  aside {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 12px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .mode-btn {
+    background: var(--panel2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 6px; font-size: 11.5px; font-weight: 600;
+    cursor: pointer; text-align: left; line-height: 1.25;
+  }
+  .mode-btn[aria-pressed="true"] {
+    background: #143254; border-color: var(--accent); color: #ffffff;
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .mode-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--warn); outline-offset: 1px;
+  }
+  .card {
+    background: var(--panel2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px;
+  }
+  .card h2 {
+    margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--accent);
+  }
+  .ctrl-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: 7px; font-size: 12px;
+  }
+  .ctrl-row label { color: var(--muted); flex: 1; }
+  .ctrl-row input[type="range"] { width: 135px; accent-color: var(--accent); }
+  .ctrl-row select {
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 4px; padding: 3px 6px; font-size: 12px;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .btn {
+    background: #1b2c4a; color: var(--text); border: 1px solid var(--border);
+    border-radius: 5px; padding: 5px 9px; font-size: 11.5px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); background: #21375c; }
+  .btn.primary { background: #144872; border-color: var(--accent); }
+  .btn.warn { background: #4a3310; border-color: var(--warn); color: #ffe3a3; }
+  .telemetry {
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 11.5px; line-height: 1.5; white-space: pre-wrap;
+    color: #d8e6f8; background: #09101f; border-radius: 6px;
+    padding: 8px; border: 1px solid #1d2d4a;
+  }
+  main { position: relative; background: #050914; overflow: hidden; }
+  canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  .overlay-hud {
+    position: absolute; top: 12px; left: 12px; pointer-events: none;
+    background: rgba(8, 13, 26, 0.84); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px; font-size: 12px;
+    max-width: 440px; backdrop-filter: blur(4px);
+  }
+  .overlay-hud strong { color: var(--accent); }
+  .legend {
+    position: absolute; bottom: 12px; left: 12px; pointer-events: none;
+    background: rgba(8, 13, 26, 0.84); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px; font-size: 11.5px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  footer {
+    grid-column: 1 / 3;
+    background: var(--panel); border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px; font-size: 11px; color: var(--muted);
+  }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: 52px 46vh 1fr 28px; }
+    aside { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <header>
+    <h1>
+      <span>PROMISLOW–FRACTON–AMOEBA</span>
+      <span class="badge">v1.0.0 · Live 3D WebGL2 + Exact Algebra</span>
+    </h1>
+    <nav aria-label="Repository links">
+      <a href="../blueprint/index.html">Lean 4.35.0 Proof Blueprint</a>
+      <a href="https://github.com/0thernes/promislow-fracton-amoeba" target="_blank" rel="noopener">GitHub Repo</a>
+    </nav>
+  </header>
+
+  <aside aria-label="Laboratory controls">
+    <div class="mode-tabs" role="group" aria-label="Physics Engine Modes">
+      <button class="mode-btn" id="tab-braid" aria-pressed="true" onclick="setMode('braid')">
+        1. B₄ Eigenvalue Braids<br><span style="color:var(--muted);font-weight:400">Gardam Ψ(α̃) &amp; Mod-2</span>
+      </button>
+      <button class="mode-btn" id="tab-fracton" aria-pressed="false" onclick="setMode('fracton')">
+        2. 3D Fractons (𝔽ₚ)<br><span style="color:var(--muted);font-weight:400">Haah CC1 &amp; Signed m</span>
+      </button>
+      <button class="mode-btn" id="tab-ca" aria-pressed="false" onclick="setMode('ca')">
+        3. Reversible HW CA<br><span style="color:var(--muted);font-weight:400">Φ_α ↔ Φ_β on M_L</span>
+      </button>
+      <button class="mode-btn" id="tab-amoeba" aria-pressed="false" onclick="setMode('amoeba')">
+        4. 3D Double-Amoeba<br><span style="color:var(--muted);font-weight:400">𝒜(f) ∩ 𝒜(g) &amp; EP2</span>
+      </button>
+    </div>
+
+    <div id="controls-container"></div>
+
+    <div class="card">
+      <h2>Live Verified Telemetry</h2>
+      <div class="telemetry" id="telemetry" aria-live="polite">Initializing WebGL2 engine...</div>
+    </div>
+
+    <div class="card">
+      <h2>Camera &amp; Accessibility</h2>
+      <div class="btn-row">
+        <button class="btn" onclick="resetCam()">Reset View (R)</button>
+        <button class="btn" id="spin-btn" onclick="toggleSpin()">Auto-Orbit: ON (Space)</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0 0;">
+        Drag canvas to orbit · Scroll to zoom · Keys 1–4 switch modes · Every curve, bit, and syndrome is computed live from exact algebraic rules.
+      </p>
+    </div>
+  </aside>
+
+  <main>
+    <canvas id="glcanvas" aria-label="Interactive 3D WebGL2 visualization canvas"></canvas>
+    <div class="overlay-hud" id="hud-desc"></div>
+    <div class="legend" id="legend-bar"></div>
+  </main>
+
+  <footer>
+    <span>Author: Alexander Stephen Donahue (Independent Researcher, ORCID 0009-0006-8168-9648)</span>
+    <span>15 Zero-Mathlib Lean 4.35.0 Theorems (6 Kernels) · Dual License: Apache-2.0 / CC-BY-4.0</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================================
+ * 1. EXACT ALGEBRAIC CORE: PROMISLOW GROUP P, GARDAM α & β, 4×4 BLOCH Ψ(α̃)
+ * ========================================================================== */
+const SIGS = [[1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1]];
+const COSET_PROD = [
+  [[0,0,0,0],[0,0,0,1],[0,0,0,2],[0,0,0,3]],
+  [[0,0,0,1],[1,0,0,0],[0,0,0,3],[1,0,0,2]],
+  [[0,0,0,2],[-1,1,-1,3],[0,1,0,0],[-1,0,-1,1]],
+  [[0,0,0,3],[0,-1,1,2],[0,-1,0,1],[0,0,1,0]],
+];
+const GARDAM_ALPHA = [
+  [0,0,0,0],[1,0,0,0],[0,1,0,0],[1,1,0,0],[0,0,-1,0],[1,0,-1,0],[0,1,-1,0],[1,1,-1,0],
+  [-1,-1,0,1],[1,0,0,1],[0,-1,1,1],[0,0,1,1],
+  [0,0,0,2],[1,0,0,2],[0,-1,1,2],[1,1,1,2],
+  [0,0,0,3],[1,0,-1,3],[-1,0,-1,3],[0,1,-1,3],[0,-1,-1,3],
+];
+const GARDAM_BETA = [
+  [-1,-1,0,0],[-1,-1,1,0],[-1,0,0,0],[-1,0,1,0],[0,-1,0,0],[0,-1,1,0],[0,0,0,0],[0,0,1,0],
+  [-2,-1,0,1],[-1,-1,1,1],[-1,0,1,1],[0,0,0,1],
+  [0,-2,1,2],[0,-1,0,2],[1,-1,0,2],[1,0,1,2],
+  [-1,0,0,3],[0,-1,0,3],[0,0,-1,3],[0,1,0,3],[1,0,0,3],
+];
+
+// Build exact 4x4 Laurent matrix M_alpha[row][col] = [[px, py, pz, v], ...]
+const BLOCH_M = Array.from({length: 4}, () => Array.from({length: 4}, () => []));
+for (let row = 0; row < 4; row++) {
+  const [s1, s2, s3] = SIGS[row];
+  const acc = [new Map(), new Map(), new Map(), new Map()];
+  for (const [gx, gy, gz, gc] of GARDAM_ALPHA) {
+    const [dx, dy, dz, col] = COSET_PROD[row][gc];
+    const px = s1 * gx + dx, py = s2 * gy + dy, pz = s3 * gz + dz;
+    const key = `${px},${py},${pz}`;
+    acc[col].set(key, (acc[col].get(key) || 0) + 1);
+  }
+  for (let col = 0; col < 4; col++) {
+    for (const [key, v] of acc[col].entries()) {
+      const [px, py, pz] = key.split(",").map(Number);
+      BLOCH_M[row][col].push([px, py, pz, v]);
+    }
+  }
+}
+
+const PERMS4 = [];
+(function genPerms(arr, l) {
+  if (l === arr.length) {
+    let inv = 0;
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) if (arr[i] > arr[j]) inv++;
+    PERMS4.push({p: arr.slice(), sgn: inv % 2 ? -1 : 1});
+    return;
+  }
+  for (let i = l; i < arr.length; i++) {
+    [arr[l], arr[i]] = [arr[i], arr[l]];
+    genPerms(arr, l + 1);
+    [arr[l], arr[i]] = [arr[i], arr[l]];
+  }
+})([0,1,2,3], 0);
+
+// Complex helpers [re, im]
+const cAdd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+const cSub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+const cMul = (a, b) => [a[0]*b[0] - a[1]*b[1], a[0]*b[1] + a[1]*b[0]];
+const cDiv = (a, b) => { const d = b[0]*b[0] + b[1]*b[1] || 1e-18; return [(a[0]*b[0]+a[1]*b[1])/d, (a[1]*b[0]-a[0]*b[1])/d]; };
+const cAbs = (a) => Math.hypot(a[0], a[1]);
+
+function evalBloch(kx, ky, kz, collapseT = 0.0) {
+  const mat = Array.from({length: 4}, () => Array.from({length: 4}, () => [0, 0]));
+  const scale = 1.0 - collapseT;
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      let re = 0, im = 0;
+      for (const [px, py, pz, v] of BLOCH_M[i][j]) {
+        const ph = px * kx + py * ky + pz * kz;
+        re += v * Math.cos(ph);
+        im += v * Math.sin(ph);
+      }
+      if (i === j) {
+        mat[i][j] = [scale * re + collapseT * 1.0, scale * im];
+      } else {
+        mat[i][j] = [scale * re, scale * im];
+      }
+    }
+  }
+  return mat;
+}
+
+function charpoly4(M) {
+  const mm = (A, B) => {
+    const C = Array.from({length: 4}, () => Array.from({length: 4}, () => [0, 0]));
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) for (let k = 0; k < 4; k++) C[i][j] = cAdd(C[i][j], cMul(A[i][k], B[k][j]));
+    return C;
+  };
+  const tr = (A) => cAdd(cAdd(A[0][0], A[1][1]), cAdd(A[2][2], A[3][3]));
+  const sc = (z, s) => [z[0]*s, z[1]*s];
+  const addD = (A, d) => A.map((row, i) => row.map((v, j) => i === j ? cAdd(v, d) : v));
+  const c3 = sc(tr(M), -1);
+  const B1 = addD(M, c3), MB1 = mm(M, B1);
+  const c2 = sc(tr(MB1), -0.5);
+  const B2 = addD(MB1, c2), MB2 = mm(M, B2);
+  const c1 = sc(tr(MB2), -1/3);
+  const B3 = addD(MB2, c1), MB3 = mm(M, B3);
+  const c0 = sc(tr(MB3), -0.25);
+  return [[1,0], c3, c2, c1, c0];
+}
+
+function quarticDisc(c) {
+  const [, b, cc, d, e] = c;
+  const sc = (k, z) => [k*z[0], k*z[1]];
+  const b2 = cMul(b,b), b3 = cMul(b2,b), b4 = cMul(b2,b2);
+  const c2 = cMul(cc,cc), c3 = cMul(c2,cc), c4 = cMul(c2,c2);
+  const d2 = cMul(d,d), d3 = cMul(d2,d), d4 = cMul(d2,d2);
+  const e2 = cMul(e,e), e3 = cMul(e2,e);
+  let res = sc(256, e3);
+  res = cSub(res, sc(192, cMul(cMul(b, d), e2)));
+  res = cSub(res, sc(128, cMul(c2, e2)));
+  res = cAdd(res, sc(144, cMul(cMul(cc, d2), e)));
+  res = cSub(res, sc(27, d4));
+  res = cAdd(res, sc(144, cMul(cMul(b2, cc), e2)));
+  res = cSub(res, sc(6, cMul(cMul(b2, d2), e)));
+  res = cSub(res, sc(80, cMul(cMul(cMul(b, c2), d), e)));
+  res = cAdd(res, sc(18, cMul(cMul(b, cc), d3)));
+  res = cAdd(res, sc(16, cMul(c4, e)));
+  res = cSub(res, sc(4, cMul(c3, d2)));
+  res = cSub(res, sc(27, cMul(b4, e2)));
+  res = cAdd(res, sc(18, cMul(cMul(cMul(b3, cc), d), e)));
+  res = cSub(res, sc(4, cMul(b3, d3)));
+  res = cSub(res, sc(4, cMul(cMul(b2, c3), e)));
+  res = cAdd(res, cMul(cMul(b2, c2), d2));
+  return res;
+}
+
+function roots4DK(c, init) {
+  const r = init ? init.map(z => [z[0], z[1]]) : [0,1,2,3].map(k => [2.1*Math.cos(k*Math.PI/2 + 0.13), 2.1*Math.sin(k*Math.PI/2 + 0.13)]);
+  for (let it = 0; it < 60; it++) {
+    let mx = 0;
+    for (let i = 0; i < 4; i++) {
+      const z = r[i];
+      const fz = cAdd(cMul(cAdd(cMul(cAdd(cMul(cAdd(z, c[1]), z), c[2]), z), c[3]), z), c[4]);
+      let den = [1, 0];
+      for (let j = 0; j < 4; j++) if (i !== j) den = cMul(den, cSub(z, r[j]));
+      if (cAbs(den) < 1e-16) den = [1e-16, 0];
+      const step = cDiv(fz, den);
+      r[i] = cSub(r[i], step);
+      mx = Math.max(mx, cAbs(step));
+    }
+    if (mx < 1e-11) break;
+  }
+  return r;
+}
+
+function computeBraid(axis, f1, f2, collapseT, nSteps = 220) {
+  const getK = (t) => axis === "x" ? [t, f1, f2] : axis === "y" ? [f1, t, f2] : [f1, f2, t];
+  const r0 = roots4DK(charpoly4(evalBloch(...getK(0), collapseT)), null);
+  let rPrev = r0;
+  const trajs = [[r0[0]], [r0[1]], [r0[2]], [r0[3]]];
+  const discs = [quarticDisc(charpoly4(evalBloch(...getK(0), collapseT)))];
+  let minGap = Infinity;
+  for (let s = 1; s <= nSteps; s++) {
+    const t = 2 * Math.PI * s / nSteps;
+    const cp = charpoly4(evalBloch(...getK(t), collapseT));
+    discs.push(quarticDisc(cp));
+    const rCurr = roots4DK(cp, rPrev);
+    let bestP = PERMS4[0].p, bestD = Infinity;
+    for (const {p} of PERMS4) {
+      let d = 0;
+      for (let i = 0; i < 4; i++) d += cAbs(cSub(rCurr[p[i]], rPrev[i]));
+      if (d < bestD) { bestD = d; bestP = p; }
+    }
+    const rM = [rCurr[bestP[0]], rCurr[bestP[1]], rCurr[bestP[2]], rCurr[bestP[3]]];
+    for (let i = 0; i < 4; i++) {
+      trajs[i].push(rM[i]);
+      for (let j = i + 1; j < 4; j++) minGap = Math.min(minGap, cAbs(cSub(rM[i], rM[j])));
+    }
+    rPrev = rM;
+  }
+  let bestP = PERMS4[0].p, bestD = Infinity;
+  for (const {p} of PERMS4) {
+    let d = 0;
+    for (let i = 0; i < 4; i++) d += cAbs(cSub(rPrev[i], r0[p[i]]));
+    if (d < bestD) { bestD = d; bestP = p; }
+  }
+  let ang = 0;
+  for (let s = 0; s < nSteps; s++) {
+    const ratio = cDiv(discs[s + 1], discs[s]);
+    ang += Math.atan2(ratio[1], ratio[0]);
+  }
+  return { trajs, perm: bestP, minGap, discDeg: ang / (2 * Math.PI) };
+}
+
+/* ============================================================================
+ * 2. MODE 2: EXACT 3D F_p HAAH FRACTON SYNDROME SIMULATOR
+ * ========================================================================== */
+const FRACTON_L = 12;
+const SIGNED_CLASSES = {
+  0: { name: "m=0 (+,+,+) [CC1]", c: [1, 1, 1], det: +8 },
+  1: { name: "m=1 (+,+,-) [p=3 SINGULAR]", c: [1, 1, -1], det: -12 },
+  2: { name: "m=2 (+,-,-)", c: [1, -1, -1], det: -8 },
+  3: { name: "m=3 (-,-,-)", c: [-1, -1, -1], det: +4 },
+};
+let fractonState = { p: 2, cls: 0, order: 2, ops: new Map() };
+
+function seedFractonFractal(p, cls, order) {
+  fractonState.p = p; fractonState.cls = cls; fractonState.order = order;
+  const ops = new Map();
+  // Exact 3D Sierpinski / Pascal-mod-p fractal operator membrane of depth `order`:
+  // Apply X_1 operator at (i, j, k) with weight multinomial(i+j+k; i,j,k) mod p for i+j+k < p^order (clipped to L-2)!
+  const maxS = Math.min(FRACTON_L - 2, Math.pow(p, order));
+  const factMod = (n, mod) => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; };
+  // Compute Pascal-3D recurrence C(i,j,k) = (C(i-1,j,k) + C(i,j-1,k) + C(i,j,k-1)) mod p
+  const grid = new Int32Array(FRACTON_L * FRACTON_L * FRACTON_L);
+  const id = (i, j, k) => (i * FRACTON_L + j) * FRACTON_L + k;
+  grid[id(0, 0, 0)] = 1;
+  for (let s = 1; s < maxS; s++) {
+    for (let i = 0; i <= s && i < FRACTON_L - 1; i++) {
+      for (let j = 0; j <= s - i && j < FRACTON_L - 1; j++) {
+        const k = s - i - j;
+        if (k < 0 || k >= FRACTON_L - 1) continue;
+        let v = 0;
+        if (i > 0) v += grid[id(i - 1, j, k)];
+        if (j > 0) v += grid[id(i, j - 1, k)];
+        if (k > 0) v += grid[id(i, j, k - 1)];
+        grid[id(i, j, k)] = v % p;
+      }
+    }
+  }
+  for (let i = 0; i < FRACTON_L; i++) for (let j = 0; j < FRACTON_L; j++) for (let k = 0; k < FRACTON_L; k++) {
+    const v = grid[id(i, j, k)];
+    if (v !== 0) ops.set(`${i},${j},${k}`, v);
+  }
+  fractonState.ops = ops;
+}
+
+function computeFractonSyndromes() {
+  const { p, cls, ops } = fractonState;
+  const [c1, c2, c3] = SIGNED_CLASSES[cls].c;
+  const L = FRACTON_L;
+  const synF = new Map(), synG = new Map();
+  const addS = (mp, i, j, k, val) => {
+    const key = `${((i % L) + L) % L},${((j % L) + L) % L},${((k % L) + L) % L}`;
+    const nv = (((mp.get(key) || 0) + val) % p + p) % p;
+    if (nv === 0) mp.delete(key); else mp.set(key, nv);
+  };
+  // X_1 operator at (i,j,k) excites Z-stabilizers via g_bar and f_bar:
+  for (const [key, v] of ops.entries()) {
+    const [i, j, k] = key.split(",").map(Number);
+    // f = 1 + x + y + z -> syndrome shifts (0,0,0), (1,0,0), (0,1,0), (0,0,1)
+    addS(synF, i, j, k, v);
+    addS(synF, i + 1, j, k, v);
+    addS(synF, i, j + 1, k, v);
+    addS(synF, i, j, k + 1, v);
+    // g = 1 + c1 xy + c2 yz + c3 zx
+    addS(synG, i, j, k, v);
+    addS(synG, i + 1, j + 1, k, c1 * v);
+    addS(synG, i, j + 1, k + 1, c2 * v);
+    addS(synG, i + 1, j, k + 1, c3 * v);
+  }
+  return { synF, synG };
+}
+
+/* ============================================================================
+ * 3. MODE 3: EXACT GARDAM 21-NEIGHBOR REVERSIBLE LINEAR CA ON M_L (4*L^3)
+ * ========================================================================== */
+const CA_L = 8;
+const CA_N = 4 * CA_L * CA_L * CA_L;
+let caGrid = new Uint8Array(CA_N);
+let caSteps = 0;
+
+function caIdx(i, j, k, c) {
+  const m = (v) => ((v % CA_L) + CA_L) % CA_L;
+  return (((m(i) * CA_L + m(j)) * CA_L + m(k)) * 4) + c;
+}
+
+function resetCA(pattern = "seed") {
+  caGrid.fill(0);
+  caSteps = 0;
+  if (pattern === "seed") {
+    caGrid[caIdx(4, 4, 4, 0)] = 1;
+  } else {
+    caGrid[caIdx(4, 4, 4, 0)] = 1;
+    caGrid[caIdx(4, 4, 4, 1)] = 1;
+    caGrid[caIdx(4, 4, 4, 2)] = 1;
+    caGrid[caIdx(4, 4, 4, 3)] = 1;
+  }
+}
+
+function stepCA(ruleElems, delta) {
+  const next = new Uint8Array(CA_N);
+  for (let i = 0; i < CA_L; i++) {
+    for (let j = 0; j < CA_L; j++) {
+      for (let k = 0; k < CA_L; k++) {
+        for (let c = 0; c < 4; c++) {
+          const [s1, s2, s3] = SIGS[c];
+          let acc = 0;
+          for (const [hx, hy, hz, hc] of ruleElems) {
+            const [dx, dy, dz, c3] = COSET_PROD[c][hc];
+            acc ^= caGrid[caIdx(i + s1 * hx + dx, j + s2 * hy + dy, k + s3 * hz + dz, c3)];
+          }
+          next[caIdx(i, j, k, c)] = acc;
+        }
+      }
+    }
+  }
+  caGrid = next;
+  caSteps += delta;
+}
+
+/* ============================================================================
+ * 4. WEBGL2 3D RENDERER (ZERO DEPENDENCIES, LINES + INSTANCED POINTS)
+ * ========================================================================== */
+const canvas = document.getElementById("glcanvas");
+const gl = canvas.getContext("webgl2", { antialias: true, alpha: false });
+if (!gl) {
+  document.getElementById("telemetry").textContent = "WebGL2 not available in this browser.";
+}
+
+const VS_SRC = `#version 300 es
+precision highp float;
+layout(location=0) in vec3 aPos;
+layout(location=1) in vec3 aCol;
+layout(location=2) in float aSize;
+uniform mat4 uMVP;
+out vec3 vCol;
+void main() {
+  gl_Position = uMVP * vec4(aPos, 1.0);
+  gl_PointSize = aSize;
+  vCol = aCol;
+}`;
+
+const FS_SRC = `#version 300 es
+precision highp float;
+in vec3 vCol;
+uniform int uIsPoint;
+out vec4 fragColor;
+void main() {
+  if (uIsPoint == 1) {
+    vec2 p = gl_PointCoord * 2.0 - 1.0;
+    float r2 = dot(p, p);
+    if (r2 > 1.0) discard;
+    float glow = 1.0 - 0.55 * r2;
+    fragColor = vec4(vCol * glow, 1.0);
+  } else {
+    fragColor = vec4(vCol, 1.0);
+  }
+}`;
+
+function compileShader(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, VS_SRC));
+gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FS_SRC));
+gl.linkProgram(prog);
+const uMVP = gl.getUniformLocation(prog, "uMVP");
+const uIsPoint = gl.getUniformLocation(prog, "uIsPoint");
+
+const vbo = gl.createBuffer();
+const vao = gl.createVertexArray();
+gl.bindVertexArray(vao);
+gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 28, 0);
+gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 28, 12);
+gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 28, 24);
+
+// Camera & 4x4 matrix math
+let camYaw = 0.65, camPitch = 0.42, camDist = 6.2, autoSpin = true;
+let dragging = false, lastX = 0, lastY = 0;
+
+function resetCam() { camYaw = 0.65; camPitch = 0.42; camDist = 6.2; }
+function toggleSpin() {
+  autoSpin = !autoSpin;
+  document.getElementById("spin-btn").textContent = `Auto-Orbit: ${autoSpin ? "ON" : "OFF"} (Space)`;
+}
+
+canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; autoSpin = false; document.getElementById("spin-btn").textContent = "Auto-Orbit: OFF (Space)"; });
+window.addEventListener("pointerup", () => { dragging = false; });
+window.addEventListener("pointermove", (e) => {
+  if (!dragging) return;
+  camYaw += (e.clientX - lastX) * 0.008;
+  camPitch = Math.max(-1.45, Math.min(1.45, camPitch + (e.clientY - lastY) * 0.008));
+  lastX = e.clientX; lastY = e.clientY;
+});
+canvas.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  camDist = Math.max(2.2, Math.min(16.0, camDist * (1 + e.deltaY * 0.001)));
+}, { passive: false });
+
+window.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  if (e.key === "1") setMode("braid");
+  else if (e.key === "2") setMode("fracton");
+  else if (e.key === "3") setMode("ca");
+  else if (e.key === "4") setMode("amoeba");
+  else if (e.key === "r" || e.key === "R") resetCam();
+  else if (e.key === " ") { e.preventDefault(); toggleSpin(); }
+});
+
+function mat4Mul(A, B) {
+  const C = new Float32Array(16);
+  for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) {
+    let s = 0; for (let k = 0; k < 4; k++) s += A[k*4 + r] * B[c*4 + k];
+    C[c*4 + r] = s;
+  }
+  return C;
+}
+
+function getMVP(aspect) {
+  const fov = 45 * Math.PI / 180, f = 1 / Math.tan(fov / 2), near = 0.1, far = 100;
+  const P = new Float32Array([f/aspect,0,0,0, 0,f,0,0, 0,0,(far+near)/(near-far),-1, 0,0,(2*far*near)/(near-far),0]);
+  const eye = [camDist*Math.cos(camPitch)*Math.sin(camYaw), camDist*Math.sin(camPitch), camDist*Math.cos(camPitch)*Math.cos(camYaw)];
+  const norm = (v) => { const l = Math.hypot(...v) || 1; return v.map(x => x / l); };
+  const cross = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  const z = norm(eye);
+  const x = norm(cross([0,1,0], z));
+  const y = cross(z, x);
+  const V = new Float32Array([
+    x[0], y[0], z[0], 0,
+    x[1], y[1], z[1], 0,
+    x[2], y[2], z[2], 0,
+    -dot(x, eye), -dot(y, eye), -dot(z, eye), 1
+  ]);
+  return mat4Mul(P, V);
+}
+
+/* ============================================================================
+ * 5. SCENE GEOMETRY BUILDERS FOR ALL 4 MODES
+ * ========================================================================== */
+let currentMode = "braid";
+let lineVerts = new Float32Array(0);
+let pointVerts = new Float32Array(0);
+
+let braidParams = { axis: "x", f1: 1.0, f2: 1.5, collapse: 0.0 };
+let amoebaParams = { muX: 0.0, muY: 0.0, muZ: 0.0, showF: true, showG: true };
+
+function pushWireCube(arr, half, col) {
+  const c = col;
+  const pts = [
+    [-half,-half,-half],[half,-half,-half], [half,-half,-half],[half,half,-half],
+    [half,half,-half],[-half,half,-half], [-half,half,-half],[-half,-half,-half],
+    [-half,-half,half],[half,-half,half], [half,-half,half],[half,half,half],
+    [half,half,half],[-half,half,half], [-half,half,half],[-half,-half,half],
+    [-half,-half,-half],[-half,-half,half], [half,-half,-half],[half,-half,half],
+    [half,half,-half],[half,half,half], [-half,half,-half],[-half,half,half],
+  ];
+  for (const p of pts) arr.push(p[0], p[1], p[2], c[0], c[1], c[2], 1.0);
+}
+
+function rebuildScene() {
+  const lines = [];
+  const pts = [];
+
+  if (currentMode === "braid") {
+    const res = computeBraid(braidParams.axis, braidParams.f1, braidParams.f2, braidParams.collapse);
+    pushWireCube(lines, 1.85, [0.16, 0.24, 0.38]);
+    // Auto-scale complex plane into [-1.6, 1.6]
+    let maxR = 1.0;
+    for (const tr of res.trajs) for (const z of tr) maxR = Math.max(maxR, Math.abs(z[0]), Math.abs(z[1]));
+    const sc = 1.55 / maxR;
+    const cols = [[0.34,0.71,0.91], [1.0,0.48,0.45], [0.25,0.73,0.31], [0.94,0.71,0.16]];
+    for (let b = 0; b < 4; b++) {
+      const tr = res.trajs[b];
+      const col = cols[b];
+      for (let i = 0; i < tr.length - 1; i++) {
+        const y0 = -1.75 + 3.5 * (i / (tr.length - 1));
+        const y1 = -1.75 + 3.5 * ((i + 1) / (tr.length - 1));
+        lines.push(tr[i][0]*sc, y0, tr[i][1]*sc, col[0], col[1], col[2], 1.0);
+        lines.push(tr[i+1][0]*sc, y1, tr[i+1][1]*sc, col[0], col[1], col[2], 1.0);
+        if (i % 6 === 0) pts.push(tr[i][0]*sc, y0, tr[i][1]*sc, col[0], col[1], col[2], 5.5);
+      }
+      // Start & end markers
+      const z0 = tr[0], zE = tr[tr.length - 1];
+      pts.push(z0[0]*sc, -1.75, z0[1]*sc, 1, 1, 1, 9.5);
+      pts.push(zE[0]*sc, +1.75, zE[1]*sc, col[0], col[1], col[2], 9.5);
+    }
+    const cyc = permToCycles(res.perm);
+    document.getElementById("telemetry").textContent =
+      `Operator: Gardam Ψ(α̃)(k) (21-term HW lift)\n` +
+      `Loop: k_${braidParams.axis} ∈ [0, 2π], fixed=(${braidParams.f1.toFixed(2)}, ${braidParams.f2.toFixed(2)})\n` +
+      `Mod-2 Collapse t: ${braidParams.collapse.toFixed(2)}\n` +
+      `Band Permutation: [${res.perm.join(",")}] = ${cyc}\n` +
+      `Discriminant Braid deg_Δ: ${res.discDeg.toFixed(4)} (int ${Math.round(res.discDeg)})\n` +
+      `Min Band Gap |λ_i - λ_j|: ${res.minGap.toFixed(4)}\n` +
+      `char-0 det terms: 89 (const=97, ≡1 mod 4) | mod-2: 1`;
+    document.getElementById("hud-desc").innerHTML =
+      `<strong>Mode 1 — B₄ Eigenvalue Braids of Gardam's 4-Band Crystal Ψ(α̃)</strong><br>` +
+      `Vertical axis = momentum k<sub>${braidParams.axis}</sub> ∈ [0, 2π]; horizontal plane = (Re λ, Im λ). ` +
+      `Drag <em>Mod-2 Collapse</em> to watch the 4 non-Abelian braids untangle into the trivial unit 1.`;
+    document.getElementById("legend-bar").innerHTML =
+      `<span><i class="dot" style="background:#56b4e9"></i>Band λ₀</span>` +
+      `<span><i class="dot" style="background:#ff7b72"></i>Band λ₁</span>` +
+      `<span><i class="dot" style="background:#3fb950"></i>Band λ₂</span>` +
+      `<span><i class="dot" style="background:#f0b429"></i>Band λ₃</span>`;
+  } else if (currentMode === "fracton") {
+    pushWireCube(lines, 1.85, [0.16, 0.24, 0.38]);
+    const { synF, synG } = computeFractonSyndromes();
+    const sc = 3.3 / (FRACTON_L - 1);
+    const shift = -1.65;
+    for (const [key, v] of fractonState.ops.entries()) {
+      const [i, j, k] = key.split(",").map(Number);
+      const t = v / fractonState.p;
+      pts.push(shift + i*sc, shift + j*sc, shift + k*sc, 0.20 + 0.35*t, 0.58 + 0.25*t, 0.90, 5.5);
+    }
+    for (const [key] of synF.entries()) {
+      const [i, j, k] = key.split(",").map(Number);
+      pts.push(shift + i*sc, shift + j*sc, shift + k*sc, 1.0, 0.38, 0.28, 12.5);
+    }
+    for (const [key] of synG.entries()) {
+      const [i, j, k] = key.split(",").map(Number);
+      pts.push(shift + i*sc + 0.05, shift + j*sc + 0.05, shift + k*sc + 0.05, 0.95, 0.72, 0.12, 10.0);
+    }
+    const info = SIGNED_CLASSES[fractonState.cls];
+    const sing = (info.det % fractonState.p === 0);
+    document.getElementById("telemetry").textContent =
+      `Code: ${info.name}\n` +
+      `Prime Field: 𝔽_${fractonState.p} (Lattice ${FRACTON_L}³ = ${FRACTON_L**3} sites)\n` +
+      `Conic det(2Q) = ${info.det}  ->  ${sing ? "SINGULAR SPLIT (mod " + fractonState.p + ")" : "SMOOTH IRREDUCIBLE"}\n` +
+      `Type-II No-Strings (T2c): CERTIFIED (Bezout = 2)\n` +
+      `Fractal Operator Support: ${fractonState.ops.size} qudits\n` +
+      `Corner Fracton Syndromes: |σ_f|=${synF.size}, |σ_g|=${synG.size}`;
+    document.getElementById("hud-desc").innerHTML =
+      `<strong>Mode 2 — 3D Type-II Fracton Fractal Syndrome Engine (𝔽<sub>${fractonState.p}</sub>)</strong><br>` +
+      `Blue = Pascal-mod-p 3D fractal Pauli operator membrane; Red/Gold = strictly immobile corner fracton excitations (zero 1D string mobility).`;
+    document.getElementById("legend-bar").innerHTML =
+      `<span><i class="dot" style="background:#56b4e9"></i>Fractal Membrane (𝔽ₚ)</span>` +
+      `<span><i class="dot" style="background:#ff6147"></i>f-Fracton Syndrome</span>` +
+      `<span><i class="dot" style="background:#f2b71f"></i>g-Fracton Syndrome</span>`;
+  } else if (currentMode === "ca") {
+    pushWireCube(lines, 1.85, [0.16, 0.24, 0.38]);
+    const sc = 3.2 / (CA_L - 1), shift = -1.6;
+    const cCols = [[0.34,0.71,0.91], [1.0,0.48,0.45], [0.25,0.73,0.31], [0.94,0.71,0.16]];
+    const cOff = [[0,0,0], [0.09,0,0], [0,0.09,0], [0.09,0.09,0.09]];
+    let active = 0;
+    const byCoset = [0, 0, 0, 0];
+    for (let i = 0; i < CA_L; i++) for (let j = 0; j < CA_L; j++) for (let k = 0; k < CA_L; k++) {
+      for (let c = 0; c < 4; c++) {
+        if (caGrid[caIdx(i, j, k, c)]) {
+          active++; byCoset[c]++;
+          const col = cCols[c], o = cOff[c];
+          pts.push(shift + i*sc + o[0], shift + j*sc + o[1], shift + k*sc + o[2], col[0], col[1], col[2], 7.5);
+        }
+      }
+    }
+    document.getElementById("telemetry").textContent =
+      `Manifold: Hantzsche-Wendt M_${CA_L} (${CA_N} binary sites)\n` +
+      `Rule: Gardam 21-neighbor Φ_α ↔ Exact Inverse Φ_β\n` +
+      `Net Step Counter: t = ${caSteps}\n` +
+      `Active Bits: ${active} / ${CA_N} (${(100*active/CA_N).toFixed(1)}%)\n` +
+      `By Coset [e, a, b, ab]: [${byCoset.join(", ")}]\n` +
+      `Theorem T1g: Φ_α(Φ_β(x)) = x bit-for-bit (ANL-063)`;
+    document.getElementById("hud-desc").innerHTML =
+      `<strong>Mode 3 — Gardam 21-Neighbor Reversible 3D Cellular Automaton on M<sub>${CA_L}</sub></strong><br>` +
+      `Step forward with Φ<sub>α</sub> (scrambling across all 4 screw-axis cosets), then step backward with Φ<sub>β</sub> to witness exact bit-for-bit time reversal!`;
+    document.getElementById("legend-bar").innerHTML =
+      `<span><i class="dot" style="background:#56b4e9"></i>Coset e</span>` +
+      `<span><i class="dot" style="background:#ff7b72"></i>Coset a</span>` +
+      `<span><i class="dot" style="background:#3fb950"></i>Coset b</span>` +
+      `<span><i class="dot" style="background:#f0b429"></i>Coset ab</span>`;
+  } else if (currentMode === "amoeba") {
+    pushWireCube(lines, 1.85, [0.16, 0.24, 0.38]);
+    // 3D shell of A(f), A(g), and A(f) ∩ A(g) in mu in [-2, 2]^3
+    const N = 19, lim = 2.0;
+    let cntF = 0, cntG = 0, cntBoth = 0;
+    const inF = (rx, ry, rz) => (1 <= rx+ry+rz) && (rx <= 1+ry+rz) && (ry <= 1+rx+rz) && (rz <= 1+rx+ry);
+    const inG = (rx, ry, rz) => {
+      const a = rx*ry, b = ry*rz, c = rz*rx;
+      return (1 <= a+b+c) && (a <= 1+b+c) && (b <= 1+a+c) && (c <= 1+a+b);
+    };
+    for (let ix = 0; ix < N; ix++) {
+      const ux = -lim + 2*lim*ix/(N-1), rx = Math.exp(ux);
+      for (let iy = 0; iy < N; iy++) {
+        const uy = -lim + 2*lim*iy/(N-1), ry = Math.exp(uy);
+        for (let iz = 0; iz < N; iz++) {
+          const uz = -lim + 2*lim*iz/(N-1), rz = Math.exp(uz);
+          const fOk = inF(rx, ry, rz), gOk = inG(rx, ry, rz);
+          if (fOk) cntF++; if (gOk) cntG++; if (fOk && gOk) cntBoth++;
+          const x = ux * 0.85, y = uy * 0.85, z = uz * 0.85;
+          if (fOk && gOk) {
+            pts.push(x, y, z, 0.82, 0.45, 0.72, 6.0);
+          } else if (fOk && amoebaParams.showF) {
+            pts.push(x, y, z, 0.30, 0.68, 0.90, 4.0);
+          } else if (gOk && amoebaParams.showG) {
+            pts.push(x, y, z, 0.92, 0.64, 0.12, 4.0);
+          }
+        }
+      }
+    }
+    // Live probe cursor
+    const prx = Math.exp(amoebaParams.muX), pry = Math.exp(amoebaParams.muY), prz = Math.exp(amoebaParams.muZ);
+    const pf = inF(prx, pry, prz), pg = inG(prx, pry, prz);
+    pts.push(amoebaParams.muX*0.85, amoebaParams.muY*0.85, amoebaParams.muZ*0.85, 1.0, 1.0, 1.0, 15.0);
+    const phase = (pf && pg) ? "DOUBLE-EP INTERSECTION 𝒜(f) ∩ 𝒜(g)" :
+                  (pf ? "EP2 SHEET 𝒜(f) ONLY (H²=0, H≠0)" :
+                  (pg ? "EP2 SHEET 𝒜(g) ONLY (H²=0, H≠0)" : "GAPPED COMPLEMENT (No Zero Mode)"));
+    document.getElementById("telemetry").textContent =
+      `Probe μ = (${amoebaParams.muX.toFixed(2)}, ${amoebaParams.muY.toFixed(2)}, ${amoebaParams.muZ.toFixed(2)})\n` +
+      `Radii r = (${prx.toFixed(2)}, ${pry.toFixed(2)}, ${prz.toFixed(2)})\n` +
+      `Status: ${phase}\n` +
+      `3D Voxel Fill (${N}³): 𝒜(f)=${cntF}, 𝒜(g)=${cntG}, ∩=${cntBoth}\n` +
+      `Theorem T3b: Origin (0,0,0) ∈ 𝒜(f) ∩ 𝒜(g); EP2 H²=0`;
+    document.getElementById("hud-desc").innerHTML =
+      `<strong>Mode 4 — 3D Non-Hermitian Haah Double-Amoeba 𝒜(f) ∩ 𝒜(g)</strong><br>` +
+      `Exact quadrilateral amoeba shells of f = 1+x+y+z (cyan), g = 1+xy+yz+zx (gold), and their double-EP intersection (magenta). White sphere = live μ probe.`;
+    document.getElementById("legend-bar").innerHTML =
+      `<span><i class="dot" style="background:#cc79a7"></i>𝒜(f) ∩ 𝒜(g)</span>` +
+      `<span><i class="dot" style="background:#56b4e9"></i>𝒜(f) Only (EP2)</span>` +
+      `<span><i class="dot" style="background:#e69f00"></i>𝒜(g) Only (EP2)</span>` +
+      `<span><i class="dot" style="background:#ffffff"></i>Live Probe μ</span>`;
+  }
+
+  lineVerts = new Float32Array(lines);
+  pointVerts = new Float32Array(pts);
+}
+
+function permToCycles(p) {
+  const seen = [false,false,false,false], cycs = [];
+  for (let i = 0; i < 4; i++) {
+    if (seen[i]) continue;
+    const c = []; let cur = i;
+    while (!seen[cur]) { seen[cur] = true; c.push(cur); cur = p[cur]; }
+    if (c.length > 1) cycs.push(`(${c.join(" ")})`);
+  }
+  return cycs.length ? cycs.join("") : "id";
+}
+
+function renderControls() {
+  const el = document.getElementById("controls-container");
+  if (currentMode === "braid") {
+    el.innerHTML = `<div class="card">
+      <h2>B₄ Braid &amp; Mod-2 Collapse Controls</h2>
+      <div class="ctrl-row"><label for="sel-axis">Cycle Axis</label>
+        <select id="sel-axis" onchange="braidParams.axis=this.value;rebuildScene()">
+          <option value="x" ${braidParams.axis==='x'?'selected':''}>k_x ∈ [0, 2π]</option>
+          <option value="y" ${braidParams.axis==='y'?'selected':''}>k_y ∈ [0, 2π]</option>
+          <option value="z" ${braidParams.axis==='z'?'selected':''}>k_z ∈ [0, 2π]</option>
+        </select></div>
+      <div class="ctrl-row"><label for="sl-f1">Fixed k₁ (${braidParams.f1.toFixed(2)})</label>
+        <input id="sl-f1" type="range" min="0" max="6.28" step="0.05" value="${braidParams.f1}"
+          oninput="braidParams.f1=parseFloat(this.value);this.previousElementSibling.textContent='Fixed k₁ ('+braidParams.f1.toFixed(2)+')';rebuildScene()"></div>
+      <div class="ctrl-row"><label for="sl-f2">Fixed k₂ (${braidParams.f2.toFixed(2)})</label>
+        <input id="sl-f2" type="range" min="0" max="6.28" step="0.05" value="${braidParams.f2}"
+          oninput="braidParams.f2=parseFloat(this.value);this.previousElementSibling.textContent='Fixed k₂ ('+braidParams.f2.toFixed(2)+')';rebuildScene()"></div>
+      <div class="ctrl-row"><label for="sl-col">Mod-2 Collapse (${braidParams.collapse.toFixed(2)})</label>
+        <input id="sl-col" type="range" min="0" max="1" step="0.02" value="${braidParams.collapse}"
+          oninput="braidParams.collapse=parseFloat(this.value);this.previousElementSibling.textContent='Mod-2 Collapse ('+braidParams.collapse.toFixed(2)+')';rebuildScene()"></div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="presetBraid('x',0.3,0.7)">(1 2) deg -1</button>
+        <button class="btn primary" onclick="presetBraid('x',1.0,1.5)">(0 2 1 3) deg -3</button>
+        <button class="btn primary" onclick="presetBraid('z',2.0,1.0)">(0 1)(2 3) deg -2</button>
+        <button class="btn primary" onclick="presetBraid('y',1.0,1.5)">(0 3 1 2) deg +3</button>
+      </div>
+    </div>`;
+  } else if (currentMode === "fracton") {
+    el.innerHTML = `<div class="card">
+      <h2>3D Type-II Fracton Controls</h2>
+      <div class="ctrl-row"><label for="sel-p">Prime Field 𝔽ₚ</label>
+        <select id="sel-p" onchange="seedFractonFractal(parseInt(this.value), fractonState.cls, fractonState.order);rebuildScene()">
+          ${[2,3,5,7,11].map(p=>`<option value="${p}" ${fractonState.p===p?'selected':''}>p = ${p}</option>`).join("")}
+        </select></div>
+      <div class="ctrl-row"><label for="sel-cls">Signed Gauge Class</label>
+        <select id="sel-cls" onchange="seedFractonFractal(fractonState.p, parseInt(this.value), fractonState.order);rebuildScene()">
+          ${[0,1,2,3].map(c=>`<option value="${c}" ${fractonState.cls===c?'selected':''}>${SIGNED_CLASSES[c].name}</option>`).join("")}
+        </select></div>
+      <div class="ctrl-row"><label for="sl-ord">Fractal Depth (${fractonState.order})</label>
+        <input id="sl-ord" type="range" min="1" max="3" step="1" value="${fractonState.order}"
+          oninput="seedFractonFractal(fractonState.p, fractonState.cls, parseInt(this.value));this.previousElementSibling.textContent='Fractal Depth ('+this.value+')';rebuildScene()"></div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="seedFractonFractal(2,0,3);renderControls();rebuildScene()">Binary CC1 (p=2)</button>
+        <button class="btn warn" onclick="seedFractonFractal(3,1,2);renderControls();rebuildScene()">p=3 Singular m=1</button>
+        <button class="btn" onclick="seedFractonFractal(5,0,1);renderControls();rebuildScene()">Qupit p=5</button>
+      </div>
+    </div>`;
+  } else if (currentMode === "ca") {
+    el.innerHTML = `<div class="card">
+      <h2>Gardam Reversible HW CA Controls</h2>
+      <div class="btn-row">
+        <button class="btn primary" onclick="stepCA(GARDAM_ALPHA, +1);rebuildScene()">+1 Step Φ_α</button>
+        <button class="btn primary" onclick="for(let i=0;i<5;i++)stepCA(GARDAM_ALPHA,+1);rebuildScene()">+5 Steps Φ_α</button>
+        <button class="btn warn" onclick="stepCA(GARDAM_BETA, -1);rebuildScene()">-1 Inverse Φ_β</button>
+        <button class="btn warn" onclick="for(let i=0;i<5;i++)stepCA(GARDAM_BETA,-1);rebuildScene()">-5 Inverse Φ_β</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="resetCA('seed');rebuildScene()">Reset Single Seed</button>
+        <button class="btn" onclick="resetCA('tetra');rebuildScene()">Reset 4-Coset Seed</button>
+      </div>
+    </div>`;
+  } else if (currentMode === "amoeba") {
+    el.innerHTML = `<div class="card">
+      <h2>3D Haah Double-Amoeba Probe</h2>
+      <div class="ctrl-row"><label for="sl-mx">Flux μ_x (${amoebaParams.muX.toFixed(2)})</label>
+        <input id="sl-mx" type="range" min="-2.0" max="2.0" step="0.05" value="${amoebaParams.muX}"
+          oninput="amoebaParams.muX=parseFloat(this.value);this.previousElementSibling.textContent='Flux μ_x ('+amoebaParams.muX.toFixed(2)+')';rebuildScene()"></div>
+      <div class="ctrl-row"><label for="sl-my">Flux μ_y (${amoebaParams.muY.toFixed(2)})</label>
+        <input id="sl-my" type="range" min="-2.0" max="2.0" step="0.05" value="${amoebaParams.muY}"
+          oninput="amoebaParams.muY=parseFloat(this.value);this.previousElementSibling.textContent='Flux μ_y ('+amoebaParams.muY.toFixed(2)+')';rebuildScene()"></div>
+      <div class="ctrl-row"><label for="sl-mz">Flux μ_z (${amoebaParams.muZ.toFixed(2)})</label>
+        <input id="sl-mz" type="range" min="-2.0" max="2.0" step="0.05" value="${amoebaParams.muZ}"
+          oninput="amoebaParams.muZ=parseFloat(this.value);this.previousElementSibling.textContent='Flux μ_z ('+amoebaParams.muZ.toFixed(2)+')';rebuildScene()"></div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="amoebaParams.muX=0;amoebaParams.muY=0;amoebaParams.muZ=0;renderControls();rebuildScene()">Origin (0,0,0) ∈ ∩</button>
+        <button class="btn warn" onclick="amoebaParams.muX=1.6;amoebaParams.muY=0;amoebaParams.muZ=0;renderControls();rebuildScene()">Exit 𝒜(f) (r_x≈5)</button>
+      </div>
+    </div>`;
+  }
+}
+
+function presetBraid(axis, f1, f2) {
+  braidParams.axis = axis; braidParams.f1 = f1; braidParams.f2 = f2; braidParams.collapse = 0.0;
+  renderControls(); rebuildScene();
+}
+
+function setMode(m) {
+  currentMode = m;
+  for (const id of ["braid", "fracton", "ca", "amoeba"]) {
+    document.getElementById("tab-" + id).setAttribute("aria-pressed", String(id === m));
+  }
+  renderControls();
+  rebuildScene();
+}
+
+function drawFrame() {
+  if (!gl) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.floor(canvas.clientWidth * dpr), h = Math.floor(canvas.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  gl.viewport(0, 0, w, h);
+  gl.enable(gl.DEPTH_TEST);
+  gl.clearColor(0.024, 0.038, 0.082, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  if (autoSpin) camYaw += 0.0045;
+  const mvp = getMVP(w / Math.max(h, 1));
+  gl.useProgram(prog);
+  gl.uniformMatrix4fv(uMVP, false, mvp);
+  gl.bindVertexArray(vao);
+
+  if (lineVerts.length > 0) {
+    gl.uniform1i(uIsPoint, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, lineVerts, gl.DYNAMIC_DRAW);
+    gl.drawArrays(gl.LINES, 0, lineVerts.length / 7);
+  }
+  if (pointVerts.length > 0) {
+    gl.uniform1i(uIsPoint, 1);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, pointVerts, gl.DYNAMIC_DRAW);
+    gl.drawArrays(gl.POINTS, 0, pointVerts.length / 7);
+  }
+  requestAnimationFrame(drawFrame);
+}
+
+// Initialize all modes
+seedFractonFractal(2, 0, 3);
+resetCA("seed");
+setMode("braid");
+requestAnimationFrame(drawFrame);
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Deploy 3D WebGL2 Studio & Lean Proof Blueprint to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble static site (studio + blueprint + landing redirect)
+        run: |
+          mkdir -p _site/studio _site/blueprint
+          cp studio/index.html _site/studio/index.html
+          cp blueprint/index.html _site/blueprint/index.html
+          cat << 'EOF' > _site/index.html
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0; url=studio/index.html">
+            <title>Promislow-Fracton-Amoeba</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="studio/index.html">3D WebGL2 Studio</a> · <a href="blueprint/index.html">Lean 4.35.0 Proof Blueprint</a></p>
+          </body>
+          </html>
+          EOF
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+      - id: deployment
+        uses: actions/deploy-pages@v4

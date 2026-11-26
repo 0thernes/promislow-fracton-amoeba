@@ -1,0 +1,28 @@
+{
+  "challenge_module": "PalomarChallenge",
+  "solution_module": "PalomarSolution",
+  "theorem_names": [
+    "PromislowFracton.Palomar.t1a_promislow_group_torsion_free",
+    "PromislowFracton.Palomar.t1b_faithful_four_band_bloch_homomorphism",
+    "PromislowFracton.Palomar.t1c_universal_v4_determinant_invariance",
+    "PromislowFracton.Palomar.t1d_eight_sign_point_factorization",
+    "PromislowFracton.Palomar.t1e_gardam_unit_mod4_and_hensel_tower",
+    "PromislowFracton.Palomar.t1f_exhaustive_no_sign_lift_gardam_support",
+    "PromislowFracton.Palomar.t1g_surjunctive_reversible_linear_ca",
+    "PromislowFracton.Palomar.t2a_nonabelian_unit_twisted_css_commutation",
+    "PromislowFracton.Palomar.t2b_signed_haah_64_discriminant_classification",
+    "PromislowFracton.Palomar.t2c_universal_all_prime_no_strings",
+    "PromislowFracton.Palomar.t2d_odd_prime_torsion_and_p23_threshold",
+    "PromislowFracton.Palomar.t2e_nonabelian_hw_fracton_codes",
+    "PromislowFracton.Palomar.t3a_v4_convex_ronkin_origin_minimum",
+    "PromislowFracton.Palomar.t3b_haah_amoeba_and_ep2_jordan",
+    "PromislowFracton.Palomar.t3c_artin_b4_and_full_s4_monodromy",
+    "PromislowFracton.Palomar.prove_all_promislow_fracton_theorems"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

@@ -1,0 +1,5 @@
+---
+description: Canonical agent rules for promislow-fracton-amoeba (Build Standard for LLMs v1.2.0)
+alwaysApply: true
+---
+Follow `AGENTS.md` in the repository root as the canonical source of truth for architecture, Lean 4.35.0 zero-Mathlib proof standards, epistemic boundaries, licensing (Apache-2.0 code / CC-BY-4.0 prose), and direct-to-`main` workflow.

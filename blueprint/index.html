@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promislow-Fracton-Amoeba — Lean 4.35.0 Proof Blueprint & Dependency DAG</title>
+<style>
+  :root {
+    --bg: #080d1a;
+    --panel: #0f172a;
+    --panel-alt: #162038;
+    --border: #233354;
+    --text: #e6edf7;
+    --muted: #93a4c3;
+    --p1: #38bdf8;
+    --p2: #f97316;
+    --p3: #c084fc;
+    --core: #2dd4bf;
+    --ok: #4ade80;
+    --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.5; min-height: 100vh;
+  }
+  header {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 1rem 1.5rem;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+  }
+  .brand h1 { font-size: 1.15rem; letter-spacing: 0.02em; color: var(--p1); }
+  .brand p { font-size: 0.82rem; color: var(--muted); }
+  nav { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .btn {
+    display: inline-block; padding: 0.42rem 0.85rem; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--panel-alt);
+    color: var(--text); text-decoration: none; font-size: 0.82rem; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .btn:hover, .btn:focus-visible { border-color: var(--p1); background: #1c2a4a; outline: none; }
+  .btn.primary { background: #0e4a7b; border-color: var(--p1); }
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.75rem; padding: 0.9rem 1.5rem; background: #0b1223;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+  }
+  .stat .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .stat .val { font-size: 1.05rem; font-weight: 700; color: var(--ok); margin-top: 0.15rem; }
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 390px;
+    min-height: calc(100vh - 155px);
+  }
+  @media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } }
+  .dag-wrap {
+    padding: 1rem 1.25rem; overflow: auto; border-right: 1px solid var(--border);
+  }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
+  .pill {
+    padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.78rem;
+    border: 1px solid var(--border); background: var(--panel); color: var(--muted);
+    cursor: pointer;
+  }
+  .pill.active { color: #fff; border-color: var(--p1); background: #133658; }
+  svg#dag {
+    width: 100%; min-width: 820px; height: 740px;
+    background: radial-gradient(circle at 50% 25%, #111c36 0%, #080d1a 75%);
+    border: 1px solid var(--border); border-radius: 10px;
+  }
+  .node { cursor: pointer; transition: opacity 0.2s; }
+  .node rect { stroke-width: 1.8; rx: 8; ry: 8; }
+  .node.dim { opacity: 0.22; }
+  .node.selected rect { stroke-width: 3; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7)); }
+  .edge { fill: none; stroke: #334a74; stroke-width: 1.5; marker-end: url(#arrow); transition: stroke 0.2s, opacity 0.2s; }
+  .edge.hi { stroke: #38bdf8; stroke-width: 2.3; opacity: 1; }
+  .edge.dim { opacity: 0.14; }
+  aside {
+    padding: 1.15rem 1.25rem; background: var(--panel); overflow-y: auto;
+  }
+  .card-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    padding: 0.16rem 0.5rem; border-radius: 4px; margin-bottom: 0.5rem;
+  }
+  .tag-core { background: #0f3d3c; color: var(--core); }
+  .tag-p1 { background: #0c3556; color: var(--p1); }
+  .tag-p2 { background: #4a230b; color: var(--p2); }
+  .tag-p3 { background: #361754; color: var(--p3); }
+  .tag-gate { background: #123c24; color: var(--ok); }
+  aside h2 { font-size: 1.08rem; margin-bottom: 0.35rem; }
+  aside .decl {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem; background: #091020; border: 1px solid var(--border);
+    padding: 0.5rem 0.65rem; border-radius: 6px; color: #7dd3fc;
+    word-break: break-all; margin: 0.55rem 0;
+  }
+  aside p { font-size: 0.86rem; color: #cbd5e1; margin-bottom: 0.7rem; }
+  aside h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.85rem 0 0.35rem; }
+  .ax-list, .dep-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.74rem; padding: 0.2rem 0.5rem; border-radius: 4px;
+    background: var(--panel-alt); border: 1px solid var(--border); color: var(--text);
+  }
+  .chip.ok { border-color: #1f6b40; color: var(--ok); }
+  .chip.link { cursor: pointer; }
+  .chip.link:hover { border-color: var(--p1); color: var(--p1); }
+  table.legend { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.78rem; }
+  table.legend td { padding: 0.35rem 0.2rem; border-bottom: 1px solid #1b2844; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Promislow-Fracton-Amoeba · Lean 4.35.0 Proof Blueprint</h1>
+    <p>Zero-Mathlib formalization · 15 headline theorems (T1a–T3c) · 6 independent proof kernels · Non-vacuity &amp; adversarial witness suite</p>
+  </div>
+  <nav aria-label="Primary navigation">
+    <a class="btn primary" href="../studio/index.html">Open 3D WebGL2 Studio</a>
+    <a class="btn" href="https://github.com/0thernes/promislow-fracton-amoeba">GitHub Repository</a>
+    <a class="btn" href="https://github.com/0thernes/promislow-fracton-amoeba/blob/main/dist/Donahue_2026_promislow_fracton_amoeba.pdf">White Paper (PDF)</a>
+  </nav>
+</header>
+
+<section class="stats-bar" aria-label="Verification summary">
+  <div class="stat"><div class="label">Toolchain &amp; Dependencies</div><div class="val">Lean 4.35.0 · 0 Mathlib</div></div>
+  <div class="stat"><div class="label">Headline Theorems</div><div class="val">15 / 15 Kernel-Checked</div></div>
+  <div class="stat"><div class="label">Proof Holes &amp; Escape Hatches</div><div class="val">0 sorry · 0 native_decide</div></div>
+  <div class="stat"><div class="label">Axiom Footprint</div><div class="val">⊆ {propext, Choice, Quot}</div></div>
+  <div class="stat"><div class="label">Independent Proof Kernels</div><div class="val">6 / 6 (Palomar Paranoid)</div></div>
+</section>
+
+<main class="layout">
+  <div class="dag-wrap">
+    <div class="filter-bar" role="toolbar" aria-label="Filter theorems by pillar">
+      <button class="pill active" data-filter="all">All Modules &amp; Theorems</button>
+      <button class="pill" data-filter="core">Zero-Mathlib Core</button>
+      <button class="pill" data-filter="p1">Pillar I · Group Rings &amp; Gardam</button>
+      <button class="pill" data-filter="p2">Pillar II · All-Prime Fractons</button>
+      <button class="pill" data-filter="p3">Pillar III · Amoebae &amp; B4 Braids</button>
+      <button class="pill" data-filter="gate">Palomar &amp; Audit Gates</button>
+    </div>
+    <svg id="dag" viewBox="0 0 980 740" role="img" aria-label="Interactive dependency graph of Lean 4.35.0 theorems"></svg>
+  </div>
+
+  <aside aria-live="polite" id="inspector">
+    <span class="card-tag tag-gate" id="ins-tag">Click any node</span>
+    <h2 id="ins-title">Theorem &amp; Module Inspector</h2>
+    <div class="decl" id="ins-decl">PromislowFracton.Palomar.prove_all_promislow_fracton_theorems</div>
+    <p id="ins-desc">Select any node in the dependency graph to inspect its Lean declaration, source file, mathematical meaning, upstream prerequisites, downstream dependents, and epistemic verification tier.</p>
+    <h3>Source File &amp; Verification Tier</h3>
+    <div class="ax-list" id="ins-meta">
+      <span class="chip ok">kernel-checked</span>
+      <span class="chip">lean/PalomarSolution.lean</span>
+    </div>
+    <h3>Permitted Axioms</h3>
+    <div class="ax-list" id="ins-axioms">
+      <span class="chip ok">propext</span>
+      <span class="chip ok">Classical.choice</span>
+      <span class="chip ok">Quot.sound</span>
+    </div>
+    <h3>Upstream Dependencies</h3>
+    <div class="dep-list" id="ins-deps"><span class="chip">None selected</span></div>
+    <h3>6 Independent Kernel Replays</h3>
+    <table class="legend">
+      <tr><td>1. Lean 4.35.0 kernel</td><td style="color:var(--ok)">lake build</td></tr>
+      <tr><td>2. leanchecker-paranoid</td><td style="color:var(--ok)">Solution &amp; PalomarSolution</td></tr>
+      <tr><td>3. lean4lean</td><td style="color:var(--ok)">via lake comparator --paranoid</td></tr>
+      <tr><td>4. nanoda_bin</td><td style="color:var(--ok)">nat+string ext, strict axioms</td></tr>
+      <tr><td>5. con-leche</td><td style="color:var(--ok)">--verified export replay</td></tr>
+      <tr><td>6. con-ron</td><td style="color:var(--ok)">--verified export replay</td></tr>
+    </table>
+  </aside>
+</main>
+
+<script>
+const NODES = [
+  // Row 0: Zero-Mathlib Core
+  { id: "ALG", label: "Algebra.lean", sub: "SimpleCommRing, Mat4, ZMod", x: 140, y: 55, w: 190, group: "core",
+    file: "lean/PromislowFracton/Algebra.lean", decl: "PromislowFracton.SimpleCommRing / Mat4.det",
+    desc: "Self-contained commutative ring & integral domain typeclasses, finite rings ZMod m, exact 4×4 Leibniz determinant, sparse sorted Laurent/group-ring polynomials, with zero Mathlib imports.",
+    deps: [] },
+  { id: "T1a", label: "T1a · Promislow Group P", sub: "Torsion-free & Hantzsche-Wendt", x: 470, y: 55, w: 215, group: "p1",
+    file: "lean/PromislowFracton/PromislowGroup.lean", decl: "PromislowFracton.Palomar.t1a_promislow_group_torsion_free",
+    desc: "Proves exact group axioms, Hantzsche-Wendt relations (a^-1 b^2 a = b^-2, b^-1 a^2 b = a^-2), index-4 normal subgroup N ≅ Z^3, and that P is strictly torsion-free (g^n = 1, n ≥ 1 ⇒ g = 1).",
+    deps: ["ALG"] },
+  { id: "T1b", label: "T1b · 4-Band Bloch Map Ψ", sub: "Faithful hom R[P] ↪ M4(R[N])", x: 785, y: 55, w: 215, group: "p1",
+    file: "lean/PromislowFracton/BlochMatrix.lean", decl: "PromislowFracton.Palomar.t1b_faithful_four_band_bloch_homomorphism",
+    desc: "Constructs the exact 4×4 matrix homomorphism Ψ : R[P] → M_4(R[x±1,y±1,z±1]), proving additivity, multiplicativity, identity preservation, and faithfulness via column-0 recovery.",
+    deps: ["ALG", "T1a"] },
+
+  // Row 1: Universal V4 & 8-Sign Theory
+  { id: "T1c", label: "T1c · V4 Det Invariance", sub: "det(Ψ(u) - E·I) V4-invariant", x: 250, y: 165, w: 215, group: "p1",
+    file: "lean/PromislowFracton/BlochMatrix.lean", decl: "PromislowFracton.Palomar.t1c_universal_v4_determinant_invariance",
+    desc: "Proves monomial-permutation similarity P_c Ψ(u)(pt) = Ψ(u)(v_4(c,pt)) P_c over any commutative ring R, forcing V4-invariance of the characteristic polynomial and constant determinant for every unit.",
+    deps: ["T1b"] },
+  { id: "T1d", label: "T1d · 8-Sign Factorizations", sub: "4 quaternionic squares + 4 abelian", x: 520, y: 165, w: 225, group: "p1",
+    file: "lean/PromislowFracton/BlochMatrix.lean", decl: "PromislowFracton.Palomar.t1d_eight_sign_point_factorization",
+    desc: "Exact closed-form factorization of det Ψ(u)(s) at all 8 sign points s ∈ {±1}^3: 4 quaternionic perfect squares (P^2 - s_x Q^2 - s_y R^2 - s_z S^2)^2 for s_x s_y s_z = -1 and explicit products for s_x s_y s_z = +1.",
+    deps: ["T1b"] },
+
+  // Row 2: Gardam Obstruction & CA
+  { id: "T1e", label: "T1e · Gardam Mod-4 & Hensel", sub: "det ≡ 1 (mod 4) & 2-adic tower", x: 135, y: 280, w: 210, group: "p1",
+    file: "lean/PromislowFracton/GardamUnit.lean", decl: "PromislowFracton.Palomar.t1e_gardam_unit_mod4_and_hensel_tower",
+    desc: "Verifies Gardam's 21-term unit αβ = 1 in F_2[P], its 89-term integer determinant (const=97, aug=945, exact V4-invariance, det ≡ 1 mod 4), and proves exact Hensel lifting to (Z/2^m Z)[P]^× for all m ≥ 1.",
+    deps: ["T1a", "T1c"] },
+  { id: "T1f", label: "T1f · Strengthened 2^21 Obstruction", sub: "No sign lift in Z[P] (P1^2 ∉ {30,32})", x: 380, y: 280, w: 225, group: "p1",
+    file: "lean/PromislowFracton/GardamUnit.lean", decl: "PromislowFracton.Palomar.t1f_exhaustive_no_sign_lift_gardam_support",
+    desc: "Rules out all 2^21 sign lifts on Gardam's support—and even arbitrary even-sum p ∈ Z[N]—because s=(1,1,-1) forces Q^2=16, R^2=16, S^2=1, so P_1^2 - 31 ∈ {±1} has no integer solution.",
+    deps: ["T1d"] },
+  { id: "T1g", label: "T1g · Surjunctive Linear CA", sub: "21-neighbor reversible CA on F2^P", x: 635, y: 280, w: 210, group: "p1",
+    file: "lean/PromislowFracton/GardamUnit.lean", decl: "PromislowFracton.Palomar.t1g_surjunctive_reversible_linear_ca",
+    desc: "Proves P-equivariance, composition law Φ_u ∘ Φ_v = Φ_{uv}, and exact bijectivity Φ_α ∘ Φ_β = id = Φ_β ∘ Φ_α of Gardam's 21-neighbor cellular automaton on the non-Abelian crystal P.",
+    deps: ["T1e"] },
+
+  // Row 3: Pillar II All-Prime Fracton Codes
+  { id: "T2a", label: "T2a · Twisted CSS Commutation", sub: "Unit-conjugate non-Abelian CSS", x: 115, y: 400, w: 195, group: "p2",
+    file: "lean/PromislowFracton/HaahFractons.lean", decl: "PromislowFracton.Palomar.t2a_nonabelian_unit_twisted_css_commutation",
+    desc: "Proves that any ring unit u (u·v = 1) conjugates commuting central check operators (f, g) into non-Abelian commuting CSS checks (f·u, g·u) and (g*·v*, f*·v*) over arbitrary non-commutative rings.",
+    deps: ["ALG"] },
+  { id: "T2b", label: "T2b · 64 Signed Haah Classes", sub: "det(2Q) ∈ {±4,±8,±12}, p=3 split", x: 335, y: 400, w: 205, group: "p2",
+    file: "lean/PromislowFracton/HaahFractons.lean", decl: "PromislowFracton.Palomar.t2b_signed_haah_64_discriminant_classification",
+    desc: "Exhaustively classifies all 64 signed Haah codes into 4 gauge classes: smooth for all p ≥ 5; 24 codes (m=1, det=±12) degenerate at p=3 into F_9 conjugate lines; all 64 split over F_4 at p=2.",
+    deps: ["ALG"] },
+  { id: "T2c", label: "T2c · All-Prime No-Strings", sub: "Universal Bézout = 2 for all p ≥ 2", x: 560, y: 400, w: 200, group: "p2",
+    file: "lean/PromislowFracton/HaahFractons.lean", decl: "PromislowFracton.Palomar.t2c_universal_all_prime_no_strings",
+    desc: "Proves Haah CC1 has NO string logical operators over ANY prime characteristic p ≥ 2 or char 0 via explicit Z[t] rational parametrization with all 6 pairwise Bézout identities equal to 2 (plus F_4 at p=2).",
+    deps: ["ALG"] },
+  { id: "T2d", label: "T2d · Odd-Prime & p=23 Root", sub: "No odd-L root p≤19; first p=23, L=11", x: 785, y: 400, w: 215, group: "p2",
+    file: "lean/PromislowFracton/HaahFractons.lean", decl: "PromislowFracton.Palomar.t2d_odd_prime_torsion_and_p23_threshold",
+    desc: "Proves (1,1,1) is never a root for odd p ≥ 3, proves (-1,1,-1) gives k_p(L) ≥ 6 for all even L, rules out odd-order F_p-rational roots for odd p ≤ 19, and certifies exact witness (6, 8, 12) at p=23, L=11.",
+    deps: ["T2c"] },
+
+  // Row 4: T2e + Pillar III
+  { id: "T2e", label: "T2e · Non-Abelian HW Fractons", sub: "Gardam-twisted & intrinsic HW codes", x: 140, y: 515, w: 215, group: "p2",
+    file: "lean/PromislowFracton/HaahFractons.lean", decl: "PromislowFracton.Palomar.t2e_nonabelian_hw_fracton_codes",
+    desc: "Certifies the first non-Abelian Hantzsche-Wendt fracton codes: Gardam-twisted Haah (52+52 / 52+56 weights; commutes mod 2, 342 even commutator terms over Z[P]) and an intrinsic ring-universal HW code.",
+    deps: ["T1e", "T2a"] },
+  { id: "T3a", label: "T3a · V4-Convex Ronkin Min", sub: "Global minimum strictly at μ=(0,0,0)", x: 380, y: 515, w: 210, group: "p3",
+    file: "lean/PromislowFracton/NonHermitianAmoeba.lean", decl: "PromislowFracton.Palomar.t3a_v4_convex_ronkin_origin_minimum",
+    desc: "Proves that V4-symmetry + midpoint convexity forces R(0,0,0) ≤ R(μ) for every Hantzsche-Wendt Ronkin function over any ordered abelian group, explaining exact bipolar skin cancellation.",
+    deps: ["T1c"] },
+  { id: "T3b", label: "T3b · Haah Amoeba & EP2", sub: "Quadrilateral slice & H^2=0 nilpotency", x: 615, y: 515, w: 205, group: "p3",
+    file: "lean/PromislowFracton/NonHermitianAmoeba.lean", decl: "PromislowFracton.Palomar.t3b_haah_amoeba_and_ep2_jordan",
+    desc: "Proves the exact triangle-inequality quadrilateral characterization of Haah's double-amoeba A(f) ∩ A(g) at μ_z = 0 and algebraic EP2 Jordan defectiveness (H ≠ 0, H^2 = 0, 1D eigenspace).",
+    deps: ["ALG"] },
+  { id: "T3c", label: "T3c · Artin B4 & Full S4", sub: "Braid relations & 24-element S4 closure", x: 845, y: 515, w: 205, group: "p3",
+    file: "lean/PromislowFracton/NonHermitianAmoeba.lean", decl: "PromislowFracton.Palomar.t3c_artin_b4_and_full_s4_monodromy",
+    desc: "Proves Artin B_4 braid relations, exact homomorphism B_4 → S_4, and that the exact Gardam crystal monodromy permutations (1 2), (0 2 1 3), (0 1)(2 3) generate all 24 elements of S_4.",
+    deps: ["ALG"] },
+
+  // Row 5: Gates & Audit
+  { id: "NONVAC", label: "NonVacuity & Adversarial", sub: "Non-vacuous types & false-claim barriers", x: 250, y: 640, w: 240, group: "gate",
+    file: "lean/PromislowFracton/NonVacuity.lean + AdversarialTests.lean", decl: "PromislowFracton.NonVacuity.nonvac_all_hypotheses",
+    desc: "Explicitly inhabits every custom typeclass hypothesis (SimpleCommRing, SimpleIntDomain, OrderedConvSpace) and proves concrete negative counterexamples confirming no degenerate definitions.",
+    deps: ["T1e", "T2b", "T2e", "T3a", "T3b", "T3c"] },
+  { id: "PALOMAR", label: "PalomarSolution & 6 Kernels", sub: "prove_all_promislow_fracton_theorems", x: 650, y: 640, w: 265, group: "gate",
+    file: "lean/PalomarSolution.lean + VerifyAxioms.lean", decl: "PromislowFracton.Palomar.prove_all_promislow_fracton_theorems",
+    desc: "Single public master conjunction matching PalomarChallenge.lean identically, checked by Lean 4.35.0, leanchecker-paranoid, lean4lean, nanoda_bin, con-leche, and con-ron via lake comparator --paranoid.",
+    deps: ["T1a", "T1b", "T1c", "T1d", "T1e", "T1f", "T1g", "T2a", "T2b", "T2c", "T2d", "T2e", "T3a", "T3b", "T3c", "NONVAC"] }
+];
+
+const GROUP_STYLE = {
+  core: { fill: "#0c2e32", stroke: "#2dd4bf", tag: "tag-core", tagText: "Zero-Mathlib Core" },
+  p1:   { fill: "#0c2542", stroke: "#38bdf8", tag: "tag-p1",   tagText: "Pillar I · Group Rings & Gardam" },
+  p2:   { fill: "#381c0a", stroke: "#f97316", tag: "tag-p2",   tagText: "Pillar II · All-Prime Fractons" },
+  p3:   { fill: "#281242", stroke: "#c084fc", tag: "tag-p3",   tagText: "Pillar III · Amoebae & B4 Braids" },
+  gate: { fill: "#0e2e1d", stroke: "#4ade80", tag: "tag-gate", tagText: "Palomar & 6-Kernel Gate" }
+};
+
+const svg = document.getElementById("dag");
+const ns = "http://www.w3.org/2000/svg";
+const byId = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+function render() {
+  svg.innerHTML = `<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#4f6d9e"/>
+    </marker>
+  </defs>`;
+
+  const edgeGroup = document.createElementNS(ns, "g");
+  NODES.forEach(dst => {
+    dst.deps.forEach(srcId => {
+      const src = byId[srcId];
+      if (!src) return;
+      const x1 = src.x, y1 = src.y + 26;
+      const x2 = dst.x, y2 = dst.y - 26;
+      const my = (y1 + y2) / 2;
+      const path = document.createElementNS(ns, "path");
+      path.setAttribute("d", `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`);
+      path.setAttribute("class", "edge");
+      path.dataset.src = srcId;
+      path.dataset.dst = dst.id;
+      edgeGroup.appendChild(path);
+    });
+  });
+  svg.appendChild(edgeGroup);
+
+  const nodeGroup = document.createElementNS(ns, "g");
+  NODES.forEach(n => {
+    const st = GROUP_STYLE[n.group];
+    const g = document.createElementNS(ns, "g");
+    g.setAttribute("class", "node");
+    g.setAttribute("tabindex", "0");
+    g.setAttribute("role", "button");
+    g.setAttribute("aria-label", `${n.label}: ${n.sub}`);
+    g.dataset.id = n.id;
+    g.dataset.group = n.group;
+
+    const rect = document.createElementNS(ns, "rect");
+    rect.setAttribute("x", n.x - n.w / 2);
+    rect.setAttribute("y", n.y - 25);
+    rect.setAttribute("width", n.w);
+    rect.setAttribute("height", 50);
+    rect.setAttribute("fill", st.fill);
+    rect.setAttribute("stroke", st.stroke);
+
+    const t1 = document.createElementNS(ns, "text");
+    t1.setAttribute("x", n.x);
+    t1.setAttribute("y", n.y - 5);
+    t1.setAttribute("text-anchor", "middle");
+    t1.setAttribute("fill", "#f8fafc");
+    t1.setAttribute("font-size", "12");
+    t1.setAttribute("font-weight", "700");
+    t1.textContent = n.label;
+
+    const t2 = document.createElementNS(ns, "text");
+    t2.setAttribute("x", n.x);
+    t2.setAttribute("y", n.y + 13);
+    t2.setAttribute("text-anchor", "middle");
+    t2.setAttribute("fill", "#94a3b8");
+    t2.setAttribute("font-size", "10");
+    t2.textContent = n.sub;
+
+    g.appendChild(rect);
+    g.appendChild(t1);
+    g.appendChild(t2);
+    g.addEventListener("click", () => selectNode(n.id));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectNode(n.id); } });
+    nodeGroup.appendChild(g);
+  });
+  svg.appendChild(nodeGroup);
+}
+
+function getAncestors(id, acc = new Set()) {
+  const n = byId[id];
+  if (!n) return acc;
+  n.deps.forEach(d => { if (!acc.has(d)) { acc.add(d); getAncestors(d, acc); } });
+  return acc;
+}
+
+function selectNode(id) {
+  const n = byId[id];
+  if (!n) return;
+  const st = GROUP_STYLE[n.group];
+  const anc = getAncestors(id);
+  anc.add(id);
+
+  document.querySelectorAll(".node").forEach(el => {
+    el.classList.toggle("selected", el.dataset.id === id);
+    el.classList.toggle("dim", !anc.has(el.dataset.id));
+  });
+  document.querySelectorAll(".edge").forEach(el => {
+    const hi = anc.has(el.dataset.src) && anc.has(el.dataset.dst);
+    el.classList.toggle("hi", hi);
+    el.classList.toggle("dim", !hi);
+  });
+
+  const tag = document.getElementById("ins-tag");
+  tag.className = "card-tag " + st.tag;
+  tag.textContent = st.tagText;
+  document.getElementById("ins-title").textContent = n.label;
+  document.getElementById("ins-decl").textContent = n.decl;
+  document.getElementById("ins-desc").textContent = n.desc;
+  document.getElementById("ins-meta").innerHTML =
+    `<span class="chip ok">kernel-checked</span><span class="chip">${n.file}</span>`;
+  const depWrap = document.getElementById("ins-deps");
+  if (n.deps.length === 0) {
+    depWrap.innerHTML = `<span class="chip">Zero external imports (Lean 4 Init only)</span>`;
+  } else {
+    depWrap.innerHTML = n.deps.map(d =>
+      `<button class="chip link" type="button" onclick="selectNode('${d}')">${d}</button>`
+    ).join("");
+  }
+}
+
+document.querySelectorAll(".pill").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const f = btn.dataset.filter;
+    document.querySelectorAll(".node").forEach(el => {
+      el.classList.remove("selected");
+      el.classList.toggle("dim", f !== "all" && el.dataset.group !== f);
+    });
+    document.querySelectorAll(".edge").forEach(el => {
+      el.classList.remove("hi");
+      el.classList.toggle("dim", f !== "all");
+    });
+  });
+});
+
+render();
+selectNode("PALOMAR");
+</script>
+</body>
+</html>

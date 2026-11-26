@@ -1,0 +1,121 @@
+# yaml-language-server: $schema=./repo-standard.schema.json
+# SPDX-License-Identifier: CC-BY-4.0
+# Project manifest for the Build Standard for LLMs v1.2.0 (90/90 items evaluated).
+standard: "1.2.0"
+name: "promislow-fracton-amoeba"
+description: "Hantzsche-Wendt group rings, all-prime Type-II fracton codes, and 3D non-Hermitian B4 eigenvalue monodromy — zero-Mathlib Lean 4.35.0 six-kernel formalization, Rust core, Python oracle, AMS-LaTeX white paper, and 3D WebGL2 studio."
+owner: "0thernes"
+year: "2026"
+project_type: research
+stack:
+  - rust
+  - python
+  - other
+flags:
+  public: true
+  package: true
+  visual: true
+  ui: true
+  native: true
+  ai: false
+  personal_data: false
+  service: false
+  deployed: true
+  api: true
+  perf: true
+  concurrent: false
+  numeric: true
+  experimental: true
+  ml: false
+  formal: true
+items:
+  A01: {status: done, evidence: "README.md with crisp one-line summary, architecture, verbatim Lean axioms, and boundaries"}
+  A02: {status: done, evidence: "README.md badge ribbon (CI, Lean 4.35.0, 6 kernels, dual license, ORCID, Pages)"}
+  A03: {status: done, evidence: "README.md Quickstart + examples/quickstart_demo.py verified from clean clone"}
+  A04: {status: done, evidence: "README.md CLI & Python usage examples + justfile commands"}
+  A05: {status: done, evidence: "docs/media/social-preview.png + 4 publication vector PDF figures + live WebGL2 Studio"}
+  A06: {status: done, evidence: "Dual license: LICENSE (CC-BY-4.0 prose/paper/data) and LICENSE-CODE (Apache-2.0 code)"}
+  A07: {status: done, evidence: "CHANGELOG.md in Keep a Changelog format"}
+  A08: {status: done, evidence: "VERSION (1.0.0) synced across pyproject.toml, rust/Cargo.toml, CITATION.cff, lean/formalization.yaml + v1.0.0 tag"}
+  A09: {status: done, evidence: "cargo test --release (4/4), pytest tests/test_all.py (9/9), scripts/mutate.py (6/6), Lean 4.35.0 build"}
+  A10: {status: done, evidence: ".github/workflows/ci.yml (informational multi-OS CI with 6 Lean kernels)"}
+  A11: {status: done, evidence: "GitHub Release v1.0.0 with frozen PDF and clean-room arXiv tarball attached"}
+  A12: {status: done, evidence: ".gitignore excluding .venv, rust/target, lean/.lake, paper/build"}
+  A13: {status: done, evidence: ".gitattributes (LF/CRLF/binary) and .editorconfig"}
+  A14: {status: done, evidence: "CONTRIBUTING.md with formal proof, mutation, and taxonomy guidelines"}
+  A15: {status: done, evidence: "CODE_OF_CONDUCT.md (Contributor Covenant v2.1)"}
+  A16: {status: done, evidence: "SECURITY.md referencing docs/threat-model.md and ERRATA.md"}
+  A17: {status: done, evidence: "SUPPORT.md with issue tracker and scholarly correspondence channels"}
+  A18: {status: done, evidence: ".github/ISSUE_TEMPLATE/finding_report.yml with 10-class Build Standard dropdown"}
+  A19: {status: done, evidence: "GitHub About description and research topics configured via gh repo edit"}
+  A20: {status: done, evidence: "docs/ with statement-fidelity.md, adr/, faq-glossary.md, threat-model.md, benchmarks.md, media/"}
+  A21: {status: done, evidence: "docs/adr/0001-zero-mathlib-six-kernel-trust-base.md"}
+  A22: {status: done, evidence: "CITATION.cff + CITATION.bib + .zenodo.json (with ORCID 0009-0006-8168-9648)"}
+  A23: {status: done, evidence: "Clean commit history on main under Alexander Stephen Donahue <0_0@0thernes.art>"}
+  A24: {status: done, evidence: ".gitleaks.toml + CI secret scan + no build artifacts committed"}
+  A25: {status: done, evidence: "Cross-platform CI matrix (ubuntu-latest, windows-latest) for Rust and Python"}
+  A26: {status: done, evidence: "docs/media/social-preview.png (1280x640) visually verified"}
+  A27: {status: done, evidence: ".github/workflows/pages.yml deploying studio/index.html + blueprint/index.html to GitHub Pages"}
+  A28: {status: done, evidence: "pyproject.toml, requirements.txt, rust/Cargo.toml, lean/lakefile.toml"}
+  A29: {status: done, evidence: "ROADMAP.md separating v1.0.0 shipped milestones from v1.1.0+ open research"}
+  A30: {status: done, evidence: "All 10 Build Standard finding-class labels created on GitHub repository"}
+  A31: {status: done, evidence: "justfile with one-word commands (demo, rust, python, test, mutate, lean, kernels, paper, citations, audit, all)"}
+  A32: {status: done, evidence: "AGENTS.md (canonical), CLAUDE.md, GEMINI.md, .cursor/rules/build-standard.mdc, llms.txt, llms-full.txt"}
+  A33: {status: done, evidence: "Pinned toolchains and environment setup documented in REPLICATION.md and lean/lean-toolchain"}
+  A34: {status: n/a, note: "Offline deterministic mathematical research & static WebGL2 repo, not a long-running network service (DEVIATIONS.md)"}
+  A35: {status: n/a, note: "No mutable database; archival preservation via GitHub Releases, Software Heritage, and 0thernes-research-archive (DEVIATIONS.md)"}
+  A36: {status: done, evidence: "One-workflow static Pages deployment (.github/workflows/pages.yml) with instant git revert rollback"}
+  A37: {status: done, evidence: "docs/benchmarks.md recording measured runtime budgets across Rust, Python, Lean, and Tectonic"}
+  A38: {status: done, evidence: "studio/index.html and blueprint/index.html include ARIA labels, keyboard focus/navigation, and high-contrast accessible palettes"}
+  A39: {status: done, evidence: "SPDX license headers on all source files; zero external crate/Mathlib dependencies; references.bib credits all prior work"}
+  A40: {status: n/a, note: "Repository ships no AI models and calls no runtime LLM APIs; authoring AI disclosure is in paper/main.tex and lean/formalization.yaml (DEVIATIONS.md)"}
+  A41: {status: done, evidence: "Semantic versioning (VERSION=1.0.0), CHANGELOG.md, and ERRATA.md upgrade/errata policy"}
+  A42: {status: done, evidence: "Maintenance status declared in README.md and SUPPORT.md"}
+  A43: {status: done, evidence: "examples/quickstart_demo.py exercising all three pillars offline"}
+  A44: {status: done, evidence: "docs/faq-glossary.md"}
+  A45: {status: n/a, note: "Zero personal data collected, stored, or logged (DEVIATIONS.md)"}
+  B01: {status: done, evidence: "Clean-clone build verified across Rust, Python, Lean 4.35.0, and clean-room arXiv tarball in CI"}
+  B02: {status: done, evidence: "Pinned lean/lean-toolchain (v4.35.0), requirements.txt (exact pins), rust/Cargo.lock"}
+  B03: {status: done, evidence: "Deterministic JSON report (sort_keys=True), deterministic mtime=0 arXiv tarball, exact MANIFEST.sha256"}
+  B04: {status: done, evidence: "CLAIMS.md mapping all 15 theorems + E1/N1/O1 to formal declarations and tiers"}
+  B05: {status: done, evidence: "tests/test_all.py falsifiable assertions per pillar + 15 Lean theorems"}
+  B06: {status: done, evidence: "AdversarialTests.lean (5 Lean refutations) + test_negative_* in tests/test_all.py"}
+  B07: {status: done, evidence: "Regression tests added for every pre-release bug caught in HARDENING_LOG.md (Rust JSON, prod_z=17, Ronkin normalization)"}
+  B08: {status: done, evidence: "Golden snapshot tests in tests/test_all.py verifying results/exact_verification_report.json and results/lean_axioms.txt"}
+  B09: {status: done, evidence: "Rust CLI JSON schema contract tested by test_differential_rust_vs_python_oracle and CI"}
+  B10: {status: done, evidence: "Hypothesis property tests in tests/test_all.py (200 ElemP triples + 120 Bloch homomorphism/V4 trials)"}
+  B11: {status: done, evidence: "Differential tests comparing zero-dependency Rust promislow_core against Python exact_core"}
+  B12: {status: done, evidence: "Independent Python exact_core.py oracle cross-checking Rust and Lean results"}
+  B13: {status: done, evidence: "scripts/mutate.py semantic mutation testing killing 6/6 (100.0%) targeted algebraic mutants"}
+  B14: {status: done, evidence: "Metamorphic V4 reflection tests on Ronkin function in tests/test_all.py"}
+  B15: {status: done, evidence: "Hypothesis randomized input generation across arbitrary group-ring elements and Bloch momenta"}
+  B16: {status: done, evidence: "Memory-safe Rust (zero unsafe blocks) + Python runtime assertions + Lean kernel typechecker"}
+  B17: {status: done, evidence: "Report-only ruff check (0 issues) and cargo clippy in CI"}
+  B18: {status: done, evidence: "mypy strict check on python/pfa_verify and scripts (0 issues) + Rust strong static typing + Lean dependent types"}
+  B19: {status: n/a, note: "All verification and visualization code is single-threaded and deterministic (DEVIATIONS.md)"}
+  B20: {status: done, evidence: "Ronkin grid-refinement stability, exact analytical R(2*I_4)=4*ln(2) normalization check, and <1e-6 Rust/Python differential checks"}
+  B21: {status: n/a, note: "Not a distributed runtime service (DEVIATIONS.md)"}
+  B22: {status: done, evidence: "Zero-Mathlib Lean 4.35.0 formalization of all 15 theorems replayed across 6 independent kernels via Palomar comparator"}
+  B23: {status: n/a, note: "Algebraic theorems proved directly in Lean 4.35.0 rather than finite-state TLA+ (DEVIATIONS.md)"}
+  B24: {status: done, evidence: "Core proofs verified in Lean 4.35.0; native verifier written in memory-safe zero-unsafe Rust"}
+  B25: {status: n/a, note: "No C/C++ sources requiring CBMC bounded model checking (DEVIATIONS.md)"}
+  B26: {status: done, evidence: "docs/benchmarks.md reporting honest single-threaded wall-clock measurements"}
+  B27: {status: done, evidence: "Build timings logged across 3 hardening cycles in HARDENING_LOG.md and CI workflow logs"}
+  B28: {status: n/a, note: "Deterministic theorems and exact arithmetic rather than randomized multi-seed experiments (DEVIATIONS.md)"}
+  B29: {status: n/a, note: "No stochastic hypothesis tests or p-values claimed (DEVIATIONS.md)"}
+  B30: {status: n/a, note: "No empirical sample effect sizes or confidence intervals claimed (DEVIATIONS.md)"}
+  B31: {status: n/a, note: "No multiple statistical comparisons performed (DEVIATIONS.md)"}
+  B32: {status: n/a, note: "No clinical or randomized empirical study pre-registration applicable (DEVIATIONS.md)"}
+  B33: {status: n/a, note: "No ML model training or held-out dataset evaluation (DEVIATIONS.md)"}
+  B34: {status: n/a, note: "No shipped runtime LLM component (DEVIATIONS.md)"}
+  B35: {status: done, evidence: ".gitleaks.toml + report-only secret scan + zero external crate/Mathlib dependencies in CI"}
+  B36: {status: done, evidence: "docs/threat-model.md analyzing proof soundness, specification gaming, and supply-chain risks"}
+  B37: {status: done, evidence: "MANIFEST.sha256 verified in CI covering frozen PDF, arXiv tarball, Lean axioms, and golden reports"}
+  B38: {status: done, evidence: "actions/attest-build-provenance@v2 SLSA build provenance attestations in .github/workflows/ci.yml"}
+  B39: {status: done, evidence: "results/exact_verification_report.json, results/fig3_bipolar_stats.json, and results/lean_axioms.txt hashed in MANIFEST.sha256"}
+  B40: {status: done, evidence: "3 full hardening audit cycles logged with 10-class taxonomy in HARDENING_LOG.md"}
+  B41: {status: done, evidence: "LIMITATIONS.md separating kernel-checked theorems, numerical approximations, and open conjectures"}
+  B42: {status: done, evidence: "Concrete 6-point falsification criteria in LIMITATIONS.md ('What Would Prove Us Wrong')"}
+  B43: {status: done, evidence: "Step-by-step clean-clone protocol in REPLICATION.md"}
+  B44: {status: done, evidence: "Independent reproduction on Ubuntu & Windows GitHub Actions runners plus 6 independent Lean kernels"}
+  B45: {status: done, evidence: "3-cycle hostile red-team audit + Playbook v1.3 10-pass review recorded in HARDENING_LOG.md; self-assessed status explicitly stated"}

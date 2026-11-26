@@ -1,0 +1,33 @@
+name: Mathematical / Proof Finding Report
+description: Report a bug, error, mathematical gap, soundness hole, or reproduction failure
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: finding_class
+    attributes:
+      label: Finding Class (Build Standard v1.2.0 Taxonomy)
+      options:
+        - bug
+        - error
+        - issue
+        - problem
+        - concern
+        - dilemma
+        - conflict
+        - gap
+        - hole
+        - blindspot
+    validations:
+      required: true
+  - type: input
+    id: affected_claim
+    attributes:
+      label: Affected Claim / Theorem ID (e.g. T1f, T2c, E1, N1)
+      placeholder: "T1f"
+  - type: textarea
+    id: details
+    attributes:
+      label: Exact Details & Minimal Reproducer
+      placeholder: Include exact command, commit SHA, Lean/Rust/Python version, and observed vs. expected output.
+    validations:
+      required: true

@@ -1,0 +1,11 @@
+# Pinned runtime & verification dependencies for promislow-fracton-amoeba v1.0.0
+numpy==2.4.3
+scipy==1.17.1
+matplotlib==3.10.8
+pytest==9.0.2
+hypothesis==6.151.9
+ruff==0.15.6
+mypy==1.19.1
+PyYAML==6.0.3
+jsonschema==4.26.0
+requests==2.32.5

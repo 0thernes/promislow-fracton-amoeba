@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software, Lean 4 formalization, or accompanying white paper, please cite it as below."
+type: software
+title: "Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D Non-Hermitian B4 Eigenvalue Monodromy"
+version: "1.0.0"
+date-released: "2026-11-25"
+url: "https://github.com/0thernes/promislow-fracton-amoeba"
+repository-code: "https://github.com/0thernes/promislow-fracton-amoeba"
+license: "Apache-2.0"
+authors:
+  - family-names: "Donahue"
+    given-names: "Alexander Stephen"
+    orcid: "https://orcid.org/0009-0006-8168-9648"
+    email: "0_0@0thernes.art"
+    affiliation: "Independent Researcher, Spokane, WA, USA"
+keywords:
+  - "Kaplansky Unit Conjecture"
+  - "Hantzsche-Wendt group"
+  - "Promislow group"
+  - "Gardam unit"
+  - "Type-II fracton codes"
+  - "Haah cubic code"
+  - "non-Hermitian amoeba"
+  - "Ronkin function"
+  - "Artin braid group B4"
+  - "Lean 4"
+abstract: >-
+  Zero-Mathlib Lean 4.35.0 six-kernel formalization, zero-dependency Rust core,
+  independent Python exact oracle, real-time 3D WebGL2 interactive studio, and
+  AMS-LaTeX preprint uniting Hantzsche-Wendt group rings, all-prime Type-II
+  fracton stabilizer codes, and 3D non-Hermitian amoebae with full S4 eigenvalue
+  monodromy.

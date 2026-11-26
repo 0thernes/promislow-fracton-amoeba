@@ -1,0 +1,33 @@
+# Python / virtual environments
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+*.egg-info/
+
+# Rust build artifacts
+rust/target/
+
+# Lean 4 Lake build cache
+lean/.lake/
+lean/lake-packages/
+
+# LaTeX intermediates (frozen PDF & arXiv tarball live in dist/)
+paper/build/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~

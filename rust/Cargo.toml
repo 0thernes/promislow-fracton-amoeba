@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "promislow_core"
+version = "1.0.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Zero-dependency exact algebraic, fracton, and non-Hermitian amoeba/braid verification engine for promislow-fracton-amoeba."
+authors = ["Alexander Stephen Donahue <0_0@0thernes.art>"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

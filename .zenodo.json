@@ -1,0 +1,28 @@
+{
+  "title": "Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D Non-Hermitian B4 Eigenvalue Monodromy: A Zero-Mathlib Six-Kernel Formalization",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "publication_date": "2026-11-25",
+  "creators": [
+    {
+      "name": "Donahue, Alexander Stephen",
+      "affiliation": "Independent Researcher, Spokane, WA, USA",
+      "orcid": "0009-0006-8168-9648"
+    }
+  ],
+  "description": "Zero-Mathlib Lean 4.35.0 formalization of 15 headline theorems (T1a-T3c) checked across six independent proof kernels, paired with a zero-dependency Rust engine, independent Python exact oracle, 3D WebGL2 studio, interactive proof blueprint, and AMS-LaTeX white paper.",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "keywords": [
+    "Kaplansky Unit Conjecture",
+    "Hantzsche-Wendt group",
+    "Gardam unit",
+    "Type-II fracton codes",
+    "Haah cubic code",
+    "non-Hermitian amoeba",
+    "Ronkin function",
+    "Artin braid group B4",
+    "Lean 4"
+  ],
+  "notes": "Dual-licensed: software/Lean/Rust/Python code under Apache-2.0; scholarly manuscript, figures, and data under CC-BY-4.0. Transparent AI-assistance disclosure included in manuscript and lean/formalization.yaml."
+}

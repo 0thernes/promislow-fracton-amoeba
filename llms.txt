@@ -1,0 +1,13 @@
+# promislow-fracton-amoeba
+
+> Hantzsche--Wendt group rings, all-prime Type-II fracton codes, and 3D non-Hermitian B4 eigenvalue monodromy — 15 zero-Mathlib Lean 4.35.0 theorems checked by 6 independent proof kernels, zero-dependency Rust core, Python oracle, AMS-LaTeX white paper, and 3D WebGL2 studio.
+
+## Key Resources
+- [README.md](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/README.md): Overview, verbatim `#print axioms` output, quickstart, and verification tiers
+- [CLAIMS.md](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/CLAIMS.md): Complete ledger of all 15 kernel-checked theorems, exact computations, numerical approximations, and open problems
+- [LIMITATIONS.md](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/LIMITATIONS.md): Explicit scope limits, threats to validity, and falsification conditions
+- [REPLICATION.md](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/REPLICATION.md): Exact clean-clone reproduction commands across Lean, Rust, Python, and Tectonic
+- [lean/formalization.yaml](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/lean/formalization.yaml): Machine-readable formalization manifest
+- [3D WebGL2 Studio](https://0thernes.github.io/promislow-fracton-amoeba/studio/): Interactive 4-mode real-time 3D WebGL2 laboratory
+- [Lean Proof Blueprint](https://0thernes.github.io/promislow-fracton-amoeba/blueprint/): Interactive Lean 4.35.0 dependency DAG
+- [White Paper PDF](https://github.com/0thernes/promislow-fracton-amoeba/blob/main/dist/Donahue_2026_promislow_fracton_amoeba.pdf): Publication-grade AMS-LaTeX preprint

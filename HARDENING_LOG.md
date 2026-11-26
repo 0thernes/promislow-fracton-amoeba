@@ -1,0 +1,42 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+# HARDENING_LOG.md — Three-Cycle Comprehensive Hardening Audit
+
+All pre-release verification passes follow the **Build Standard for LLMs v1.2.0** (90 items, 10 finding classes: `bug`, `error`, `issue`, `problem`, `concern`, `dilemma`, `conflict`, `gap`, `hole`, `blindspot`) and the **Defensible Independent AI Research Playbook v1.3** (10-pass review protocol & 43-item Gold Standard Release Checklist).
+
+---
+
+## Cycle 1 — Core Algebraic, Computational & Formal Proof Construction Audit
+
+| # | Class | Scope / File | Finding | Resolution & Verification |
+|---|---|---|---|---|
+| 1.1 | `bug` | `rust/src/main.rs:43` | `{:?}` formatting of `Vec<(u32, usize)>` emitted Rust tuples `[(1, 21), ...]` instead of valid JSON arrays `[[1, 21], ...]`, causing `json.JSONDecodeError` in differential tests. | Formatted explicitly as JSON nested arrays `[[1, 21], ...]`; verified by `test_differential_rust_vs_python_oracle` and CI JSON parse check. |
+| 1.2 | `conflict` | `rust/src/lib.rs`, `python/pfa_verify/exact_core.py` | Naive $\operatorname{Re}(E)$-projection braid crossing count depended on starting-point eigenvalue ordering, causing Rust/Python disagreement. | Replaced with coordinate-free **canonical quartic discriminant braid degree** $\deg_\Delta(\gamma) = \frac{1}{2\pi}\oint d\arg \Disc(\det(\lambda I_4 - M(k)))$ in both Rust and Python; now agrees identically (`-1, -3, -2, +3`) to `< 1e-14`. |
+| 1.3 | `issue` | `scripts/make_figures.py` | Bipolar winding grid (`npts=128`) suffered phase-wrap artifacts near 1D nodal curves, producing `wmap_antisymmetry_max_err = 2.0`. | Increased integration density to `npts=384` with explicit gap filter `min_gap > 0.35`, reducing `wmap_antisymmetry_max_err` to **`0.0`** (`nonzero fraction = 0.4256`). |
+| 1.4 | `problem` | `lean/PromislowFracton/GardamUnit.lean`, `HaahFractons.lean` | Naive $O(N^2)$ linked-list `spInsert` caused `GardamUnit` to take 71s and `HaahFractons` (`T2e` 52×52 products) to exceed default recursion depth; first `spMerge` attempt used `termination_by` (`WellFounded.fix`) which was slow in pure kernel reduction, and `let rec go` was opaque to `decide` inside `module`. | Replaced with top-level purely structural `Nat`-fueled `spMergeAux` + $O(N \log N)$ bottom-up `spMergeAll`/`spSort` and decomposed `T2e` into 4 clean private lemmas; `GardamUnit` dropped from 71s to 28s, `HaahFractons` compiled cleanly with zero `set_option maxHeartbeats` and zero warnings. |
+| 1.5 | `error` | `lean/PromislowFracton/NonVacuity.lean:208` | Initial guessed roots `(4, 8, 7)` for `(cc1Px, cc1Py, cc1Pz)` in `ZMod 11` failed `decide` (`P_x(4) = 7 ≠ 0 mod 11`). | Computed exact roots `(2, 4, 3)` in $\mathbb{F}_{11}$ (`P_x(2)=0, P_y(4)=0, P_z(3)=0`), verified by kernel `decide` and synced into `docs/statement-fidelity.md`. |
+| 1.6 | `bug` | `tests/test_all.py:252` | Negative test asserted constant term of $\widetilde{\alpha}\widetilde{\beta}$ in $\mathbb{Z}[P]$ was `5`, whereas exact integer arithmetic gives `17` ($\equiv 1 \pmod{16}$). | Corrected assertion to exact `17` and verified against both Rust and Python oracles. |
+
+---
+
+## Cycle 2 — Visual, Publication, Mutation, Lint & Citation Audit
+
+| # | Class | Scope / File | Finding | Resolution & Verification |
+|---|---|---|---|---|
+| 2.1 | `hole` | `tests/test_all.py`, `scripts/mutate.py` | Semantic mutation test `M5_ronkin_log_normalization` (`tot / (2 * grid_n**3)`) **SURVIVED** because Pillar III tests only checked scale-invariant inequalities (`r0 < rx`, `r0 < rz`). | Added exact analytical scalar normalization assertion `ronkin_function(2 * I_4) == 4 * ln(2)` (`< 1e-12`) plus golden value check `4.27174279` (`< 1e-5`); mutant kill rate rose from `83.3% (5/6)` to **`100.0% (6/6)`**. |
+| 2.2 | `error` | `paper/references.bib` (initial search) | Initial memory recalled Wang–Song–Wang (2024) as *Physical Review Letters*; live search proved it was published in ***Physical Review X*** 14, 021011 (2024), DOI `10.1103/PhysRevX.14.021011`. | Fixed BibTeX journal/volume/DOI before compilation and verified **18/18** references live via Crossref DOI & arXiv APIs (`scripts/check_citations.py`, 0 retractions). |
+| 2.3 | `issue` | `paper/figures/fig1_haah_prime_bifurcation.pdf`, `fig4`, `social-preview.png` | Visual PDF/PNG inspection revealed legend overlap with the yellow `p=23` callout box in Fig 1(a) and slight label clipping in early Fig 4 / social preview. | Repositioned callout box to `(7.6, 33.5)` and adjusted 3D margins; re-inspected all 4 PDFs + PNG via `read_file` confirming zero overlaps/clipping. |
+| 2.4 | `bug` | `paper/main.tex` (Page 5 Figure 1 caption & Page 9 step count) | Visual page-by-page PDF review caught two textual mismatches: (a) Figure 1(a) caption described the 8 sign-point bar values while the rendered panel plotted the $N_1(P_1)=P_1^2-31$ obstruction parabola; (b) Section 5.2 wrote `640-step` instead of the actual `600-step` (`1024-step` for $\deg_\Delta$) used in Rust/Python; (c) Section 5.1 contained markdown backticks `` `lean/` `` and `` `module` ``. | Rewrote Figure 1 caption to match the exact plotted parabola, corrected `600-step` / `1024-step`, converted backticks to `\texttt{...}`, fixed orphan title line, and added `howpublished = {Preprint, arXiv:2106.02147}` to `murray2021more`. |
+| 2.5 | `concern` | `paper/main.tex` (TeX warnings) | Initial Tectonic compile produced 17 Overfull `\hbox` warnings (led by 128pt overflow in Table 1 and long `amsart` theorem headers). | Switched Table 1 to `tabularx` with wrapped `\texttt` declarations and inserted `\leavevmode` before theorem `enumerate` blocks; recompiled to **0 overfull hboxes, 0 underfull hboxes, 0 undefined references/citations**. |
+| 2.6 | `gap` | `python/`, `tests/`, `scripts/`, `examples/` | `ruff check` flagged 15 minor lint issues (blind `except Exception`, unused variables `bars`/`ry`, unused imports, missing `subprocess.run(..., check=False)`). | Narrowed exception catches to `(requests.RequestException, ValueError)`, cleaned unused bindings, and ran `ruff check --fix` + `mypy`; both passed with **0 errors / 0 issues**. |
+
+---
+
+## Cycle 3 — Epistemic, Trust-Base, Governance, Clean-Room & Red-Team Final Audit
+
+| # | Class | Scope / File | Finding | Resolution & Verification |
+|---|---|---|---|---|
+| 3.1 | `blindspot` | `tests/test_all.py`, `LIMITATIONS.md`, `paper/main.tex` | Grid refinement of $R(0)$ from `N=12` (`4.2292`) to `N=16` (`4.2717`) changed by `0.0426` rather than `< 1e-4`, exposing the 1D logarithmic nodal-curve quadrature singularity where $\det\Psi = 0$ ($O(1/N)$ convergence). | Documented this $O(1/N)$ nodal-singularity convergence transparently in `LIMITATIONS.md` and `paper/main.tex` Section 5.2, and verified exact analytical normalization `R(2 I_4) = 4 ln 2`. |
+| 3.2 | `dilemma` | `lean/formalization.yaml`, `CITATION.cff`, `paper/main.tex`, `LICENSE` | Playbook v1.3 explicitly prohibits listing an unformed LLC ("0thernes LLC") on scholarly manuscripts and legal notices. | Enforced `Independent Researcher, Spokane, WA, USA` across all published metadata, paper, and licenses; added automated regex guard in `scripts/audit_repo.py`. |
+| 3.3 | `gap` | `lean/formalization.yaml` | Initial manifest listed `[propext, Classical.choice, Quot.sound]` uniformly on every theorem, over-reporting axioms for constructive theorems (`t2a` uses `[]`, `t1b` uses `[propext, Quot.sound]`, `t2e` and `t3c` use `[propext]`). | Updated `lean/formalization.yaml` to match the exact minimal axiom sets verified in `results/lean_axioms.txt`. |
+| 3.4 | `concern` | `dist/arxiv_submission.tar.gz`, `MANIFEST.sha256` | Clean-room arXiv tarball determinism and end-to-end cryptographic verification needed confirmation before publication. | Built GNU-format `mtime=0, uid=0, gid=0` tarball, extracted to isolated temp directory and compiled cleanly with Tectonic 0.17.0, generated `MANIFEST.sha256`, and verified `scripts/check_readme_axioms.py`, `scripts/audit_repo.py`, `leanchecker`, `pytest`, `mutate.py`, and `cargo test --release` all pass with exit code 0. |
+| 3.5 | `blindspot` | `studio/index.html`, `blueprint/index.html` | Static HTML apps could silently harbor JS syntax errors or accessibility omissions not caught by Python/Rust/Lean suites. | Verified both HTML apps via Node `new Function(...)` JS syntax audit (`43,345 B` and `23,527 B`, 0 errors) and confirmed ARIA labels, keyboard navigation, and accessible contrast palettes (`A38`). |

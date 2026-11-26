@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: Apache-2.0
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promislow-fracton-amoeba"
+version = "1.0.0"
+description = "Hantzsche-Wendt group rings, all-prime Type-II fracton codes, and 3D non-Hermitian B4 eigenvalue monodromy — zero-Mathlib Lean 4.35.0, zero-dependency Rust, Python exact oracle, and 3D WebGL2 studio."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+authors = [
+  { name = "Alexander Stephen Donahue", email = "0_0@0thernes.art" },
+]
+keywords = [
+  "group-rings",
+  "kaplansky-unit-conjecture",
+  "hantzsche-wendt",
+  "fracton-codes",
+  "haah-cubic-code",
+  "non-hermitian-amoeba",
+  "braid-group",
+  "lean4",
+]
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.12",
+  "matplotlib>=3.8",
+  "pyyaml>=6.0",
+  "jsonschema>=4.21",
+  "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "hypothesis>=6.100",
+  "ruff>=0.4",
+  "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://github.com/0thernes/promislow-fracton-amoeba"
+Repository = "https://github.com/0thernes/promislow-fracton-amoeba"
+Issues = "https://github.com/0thernes/promislow-fracton-amoeba/issues"
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
