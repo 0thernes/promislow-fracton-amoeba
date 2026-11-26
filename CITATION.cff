@@ -18,15 +18,21 @@ keywords:
   - "Hantzsche-Wendt group"
   - "Promislow group"
   - "Gardam unit"
-  - "Type-II fracton codes"
   - "Haah cubic code"
+  - "CSS stabilizer codes"
   - "non-Hermitian amoeba"
-  - "Ronkin function"
-  - "Artin braid group B4"
+  - "symmetric group S4"
   - "Lean 4"
 abstract: >-
-  Zero-Mathlib Lean 4.35.0 six-kernel formalization, zero-dependency Rust core,
-  independent Python exact oracle, real-time 3D WebGL2 interactive studio, and
-  AMS-LaTeX preprint uniting Hantzsche-Wendt group rings, all-prime Type-II
-  fracton stabilizer codes, and 3D non-Hermitian amoebae with full S4 eigenvalue
-  monodromy.
+  Zero-Mathlib Lean 4.35.0 formalization of known facts, elementary identities
+  and finite computations about the Hantzsche-Wendt (Promislow) group ring,
+  Haah's CC1 curve and the symmetric group S4, with a Rust core, a Python exact
+  oracle, a WebGL2 studio and a preprint. Lean checks Gardam's unit in F2[P]
+  and determinant data for its integer lift, shows that no sign lift of
+  Gardam's support passes an 8-point determinant test (a necessary condition
+  for a unit), and proves a monomial lemma on a rational parametrization of the
+  CC1 curve. String operators, Ronkin functions, braid groups and monodromy are
+  not formalized; the related values are numerical or exact computations. The
+  unit conjecture is false over C (Gardam, arXiv:2312.05240); whether Z[P] or Q[P]
+  has non-trivial units remains open. The title names topics, not formalized
+  properties; see CLAIMS.md and ERRATA.md.
