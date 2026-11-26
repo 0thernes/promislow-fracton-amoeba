@@ -31,11 +31,28 @@ def parse_bib_entries(bib_text: str) -> list[dict[str, str]]:
     return entries
 
 
+def _title_words(text: str) -> set[str]:
+    clean = re.sub(r"\\[a-zA-Z]+\{([^}]*)\}", r"\1", text)
+    clean = re.sub(r"[{}]", "", clean)
+    clean = re.sub(r"[^a-z0-9]+", " ", clean.lower())
+    stop = {"the", "of", "and", "in", "on", "for", "a", "an", "to", "with", "by", "from", "at", "as"}
+    return {w for w in clean.split() if len(w) >= 3 and w not in stop}
+
+
+def _title_overlap(expected: str, actual: str) -> float:
+    ew = _title_words(expected)
+    aw = _title_words(actual)
+    if not ew or not aw:
+        return 0.0
+    return len(ew & aw) / min(len(ew), len(aw))
+
+
 def verify_entry(entry: dict[str, str], offline: bool = False) -> tuple[bool, str]:
     key = entry["key"]
     doi = entry.get("doi", "").strip()
     eprint = entry.get("eprint", "").strip()
     url = entry.get("url", "").strip()
+    expected_title = entry.get("title", "").strip()
 
     if not (doi or eprint or url):
         return False, f"[{key}] missing doi/eprint/url identifier"
@@ -56,10 +73,12 @@ def verify_entry(entry: dict[str, str], offline: bool = False) -> tuple[bool, st
             for upd in msg.get("update-to", []):
                 if "retract" in str(upd.get("type", "")).lower():
                     return False, f"[{key}] RETRACTED per Crossref update-to ({doi})"
-            cr_title = " ".join(msg.get("title", [])).lower()
-            if "retracted:" in cr_title or "retraction:" in cr_title:
+            cr_title = " ".join(msg.get("title", []))
+            if "retracted:" in cr_title.lower() or "retraction:" in cr_title.lower():
                 return False, f"[{key}] RETRACTED title detected ({doi})"
-            return True, f"[{key}] Crossref OK ({doi})"
+            if expected_title and cr_title and _title_overlap(expected_title, cr_title) < 0.45:
+                return False, f"[{key}] Crossref title mismatch for {doi}: expected {expected_title!r}, got {cr_title!r}"
+            return True, f"[{key}] Crossref title+0-retraction OK ({doi})"
         except (requests.RequestException, ValueError) as exc:
             return False, f"[{key}] Crossref request error for {doi}: {exc}"
 
@@ -71,7 +90,11 @@ def verify_entry(entry: dict[str, str], offline: bool = False) -> tuple[bool, st
                 return False, f"[{key}] arXiv API lookup failed for {eprint}"
             if "withdrawn" in r.text.lower() and "this paper has been withdrawn" in r.text.lower():
                 return False, f"[{key}] WITHDRAWN arXiv paper ({eprint})"
-            return True, f"[{key}] arXiv API OK ({eprint})"
+            m_title = re.search(r"<entry>.*?<title>(.*?)</title>", r.text, re.DOTALL)
+            ax_title = " ".join(m_title.group(1).split()) if m_title else ""
+            if expected_title and ax_title and _title_overlap(expected_title, ax_title) < 0.45:
+                return False, f"[{key}] arXiv title mismatch for {eprint}: expected {expected_title!r}, got {ax_title!r}"
+            return True, f"[{key}] arXiv title+status OK ({eprint})"
         except requests.RequestException as exc:
             return False, f"[{key}] arXiv API error for {eprint}: {exc}"
 
