@@ -29,9 +29,10 @@ jobs:
         run: |
           cargo test --release
           cargo build --release
-          ./target/release/promislow_core summary > /tmp/rust_summary.json
-          cat /tmp/rust_summary.json
-          python3 -c "import json; json.load(open('/tmp/rust_summary.json'))" || python -c "import json; json.load(open('/tmp/rust_summary.json'))"
+          ./target/release/promislow_core summary > rust_summary.json
+          cat rust_summary.json
+          python3 -c "import json; json.load(open('rust_summary.json'))" || python -c "import json; json.load(open('rust_summary.json'))"
+          rm -f rust_summary.json
           cargo clippy --all-targets || true
 
   python-oracle-and-differential:
