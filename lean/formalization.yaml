@@ -37,15 +37,9 @@ project:
     permutations, with braid relations checked on S_4 (no braid group B_4 is defined; the
     monodromy identification is numerical).
   authors:
-    - name: "Alexander S. Donahue"
-      orcid: "0009-0006-8168-9648"
-      email: "0_0@0thernes.art"
-      affiliation: "Independent Researcher, Spokane, WA, USA"
+    - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
   responsible_maintainers:
-    - name: "Alexander S. Donahue"
-      github: "0thernes"
-      orcid: "0009-0006-8168-9648"
-      email: "0_0@0thernes.art"
+    - "Alexander Stephen Donahue (@0thernes, ORCID 0009-0006-8168-9648, 0_0@0thernes.art)"
   license: "Apache-2.0"
 
 classification:
@@ -65,7 +59,7 @@ classification:
 sources:
   - title: "Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D Non-Hermitian B4 Eigenvalue Monodromy (v1.0.0)"
     authors:
-      - "Alexander S. Donahue"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://github.com/0thernes/promislow-fracton-amoeba"
     type: "original-proof"
     relationship: "other"
@@ -75,47 +69,42 @@ sources:
       external assignment.
   - title: "A counterexample to the unit conjecture for group rings"
     authors:
-      - "Giles Gardam"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://doi.org/10.4007/annals.2021.194.3.9"
     type: "paper"
     relationship: "background"
     note: "Constructs the 21-term unit in F_2[P] analyzed in Theorems T1e, T1f, T1g, T2e, and T3c."
   - title: "More counterexamples to the unit conjecture for group rings"
     authors:
-      - "Alan G. Murray"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://arxiv.org/abs/2106.02147"
     type: "paper"
     relationship: "background"
     note: "Extends Gardam's construction to prime characteristics p. Characteristic zero was later settled over C by Gardam, Non-trivial units of complex group rings, arXiv:2312.05240; whether Z[P] or Q[P] has non-trivial units remains open."
   - title: "Local stabilizer codes in three dimensions without string logical operators"
     authors:
-      - "Jeongwan Haah"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://doi.org/10.1103/PhysRevA.83.042330"
     type: "paper"
     relationship: "background"
     note: "Introduces Haah Cubic Code 1 and its no-strings property for qubits; T2b-T2d formalize algebraic facts about its curve, not string operators."
   - title: "Commuting Pauli Hamiltonians as maps between free modules"
     authors:
-      - "Jeongwan Haah"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://doi.org/10.1007/s00220-013-1810-2"
     type: "paper"
     relationship: "background"
     note: "Establishes the Laurent polynomial module formalism extended to non-Abelian R[P] in T2a and T2e."
   - title: "Amoeba Formulation of Non-Bloch Band Theory in Arbitrary Dimensions"
     authors:
-      - "Hong-Yi Wang"
-      - "Fei Song"
-      - "Zhong Wang"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://doi.org/10.1103/PhysRevX.14.021011"
     type: "paper"
     relationship: "background"
     note: "Formulates multi-dimensional non-Hermitian amoebae and Ronkin functions; T3a and T3b are elementary lemmas, and no amoeba or Ronkin function is defined in Lean."
   - title: "Homotopy characterization of non-Hermitian Hamiltonians"
     authors:
-      - "Charles C. Wojcik"
-      - "Xiao-Qi Sun"
-      - "Tomas Bzdusek"
-      - "Shanhui Fan"
+      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
     id: "https://doi.org/10.1103/PhysRevB.101.205417"
     type: "paper"
     relationship: "background"
