@@ -1,244 +1,266 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
 # SPDX-License-Identifier: Apache-2.0
-version: "v0.4"
-release_version: "1.0.0"
-
+version: v0.4
+release_version: 1.0.0
 project:
-  name: "Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D Non-Hermitian B4 Eigenvalue Monodromy"
-  description: >-
-    Zero-Mathlib Lean 4.35.0 formalization of 15 statements (T1a-T3c), with non-vacuity
-    and adversarial witness suites, covering known facts, elementary identities and
-    finite computations. Corrected after the 2026-11-26 statement audit (see ERRATA.md);
-    the project name is the paper title and names topics, not formalized properties.
-    (Pillar I) A normal-form model of the torsion-free Hantzsche-Wendt / Promislow group P
-    (group axioms, relations, torsion-free); 4x4 Bloch evaluation preserves 1, + and x
-    (the 4x4 representation is standard, Passman arXiv:2108.06570; injectivity is proved
-    for a separate coefficient map psiFormal not linked to evaluation); a V_4 determinant
-    statement that is trivial at the 8 integer sign points; 8 sign-point determinant
-    identities for a separately defined matrix; Gardam's 21-term unit in F_2[P]
-    (Gardam, Annals 2021) and determinant data for its {0,1}-lift (89 terms, constant 97,
-    coefficient sum 945, == 1 mod 4); no 2-adic Hensel statement for Gardam's unit (only a
-    generic identity); failure of the 8 sign-point determinant test for all 2^21 sign lifts
-    of Gardam's support (a necessary condition for a unit; non-invertibility is not proved
-    in Lean and is implied by Tabei arXiv:2608.00103); and the reversible linear cellular
-    automaton attached to the unit.
-    (Pillar II) An elementary unit-twisted CSS commutation identity (it also holds for u = 1);
-    a finite enumeration of a defined signed-Haah discriminant function over 64 sign tuples;
-    a lemma that no nontrivial monomial is constant on a rational parametrization of Haah's
-    CC1 curve over integral domains with 2 != 0 containing roots of three quadratics of
-    discriminant 5, plus one F_4 line (string operators are not formalized; compare Haah
-    arXiv:1101.1962 and Kim arXiv:1202.0052); a search showing p = 23 is the first odd prime
-    with an F_p-rational odd-order CC1 point (k_23(11) = 6 is a Rust/Python computation);
-    and two explicit CSS stabilizer pairs over F_2[P] / Z[P] (no distance, logical-qubit or
-    fracton property is formalized).
-    (Pillar III) A non-strict origin-minimum lemma for midpoint-convex, sign-flip-invariant
-    functions Q^3 -> Q (no Ronkin function in Lean); integer-point checks of defined amoeba
-    inequality predicates and a nonzero nilpotent 2x2 matrix; and generation of S_4 by two
-    permutations, with braid relations checked on S_4 (no braid group B_4 is defined; the
-    monodromy identification is numerical).
+  name: 'Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D
+    Non-Hermitian B4 Eigenvalue Monodromy'
+  description: Zero-Mathlib Lean 4.35.0 formalization of 15 statements (T1a-T3c), with non-vacuity and
+    adversarial witness suites, covering known facts, elementary identities and finite computations. Corrected
+    after the 2026-11-26 statement audit (see ERRATA.md); the project name is the paper title and names
+    topics, not formalized properties. (Pillar I) A normal-form model of the torsion-free Hantzsche-Wendt
+    / Promislow group P (group axioms, relations, torsion-free); 4x4 Bloch evaluation preserves 1, + and
+    x (the 4x4 representation is standard, Passman arXiv:2108.06570; injectivity is proved for a separate
+    coefficient map psiFormal not linked to evaluation); a V_4 determinant statement that is trivial at
+    the 8 integer sign points; 8 sign-point determinant identities for a separately defined matrix; Gardam's
+    21-term unit in F_2[P] (Gardam, Annals 2021) and determinant data for its {0,1}-lift (89 terms, constant
+    97, coefficient sum 945, == 1 mod 4); no 2-adic Hensel statement for Gardam's unit (only a generic
+    identity); failure of the 8 sign-point determinant test for all 2^21 sign lifts of Gardam's support
+    (a necessary condition for a unit; non-invertibility is not proved in Lean and is implied by Tabei
+    arXiv:2608.00103); and the reversible linear cellular automaton attached to the unit. (Pillar II)
+    An elementary unit-twisted CSS commutation identity (it also holds for u = 1); a finite enumeration
+    of a defined signed-Haah discriminant function over 64 sign tuples; a lemma that no nontrivial monomial
+    is constant on a rational parametrization of Haah's CC1 curve over integral domains with 2 != 0 containing
+    roots of three quadratics of discriminant 5, plus one F_4 line (string operators are not formalized;
+    compare Haah arXiv:1101.1962 and Kim arXiv:1202.0052); a search showing p = 23 is the first odd prime
+    with an F_p-rational odd-order CC1 point (k_23(11) = 6 is a Rust/Python computation); and two explicit
+    CSS stabilizer pairs over F_2[P] / Z[P] (no distance, logical-qubit or fracton property is formalized).
+    (Pillar III) A non-strict origin-minimum lemma for midpoint-convex, sign-flip-invariant functions
+    Q^3 -> Q (no Ronkin function in Lean); integer-point checks of defined amoeba inequality predicates
+    and a nonzero nilpotent 2x2 matrix; and generation of S_4 by two permutations, with braid relations
+    checked on S_4 (no braid group B_4 is defined; the monodromy identification is numerical).
   authors:
-    - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
+  - Alexander Stephen Donahue
   responsible_maintainers:
-    - "Alexander Stephen Donahue (@0thernes, ORCID 0009-0006-8168-9648, 0_0@0thernes.art)"
-  license: "Apache-2.0"
-
+  - Alexander Stephen Donahue
+  license: Apache-2.0
+  orcid: 0009-0006-8168-9648
 classification:
   arxiv:
-    - "math.RA"
-    - "quant-ph"
-    - "cond-mat.mes-hall"
-    - "math.LO"
+  - math.RA
+  - quant-ph
+  - cond-mat.mes-hall
+  - math.LO
   msc2020:
-    - "16S34"
-    - "81P73"
-    - "14T90"
-    - "20F36"
-    - "37B15"
-    - "03B35"
-
+  - 16S34
+  - 81P73
+  - 14T90
+  - 20F36
+  - 37B15
+  - 03B35
 sources:
-  - title: "Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D Non-Hermitian B4 Eigenvalue Monodromy (v1.0.0)"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://github.com/0thernes/promislow-fracton-amoeba"
-    type: "original-proof"
-    relationship: "other"
-    note: >-
-      Original formalization and companion AMS-LaTeX preprint first presented in this
-      repository. No external DOI, arXiv ID, or peer review is claimed prior to confirmed
-      external assignment.
-  - title: "A counterexample to the unit conjecture for group rings"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://doi.org/10.4007/annals.2021.194.3.9"
-    type: "paper"
-    relationship: "background"
-    note: "Constructs the 21-term unit in F_2[P] analyzed in Theorems T1e, T1f, T1g, T2e, and T3c."
-  - title: "More counterexamples to the unit conjecture for group rings"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://arxiv.org/abs/2106.02147"
-    type: "paper"
-    relationship: "background"
-    note: "Extends Gardam's construction to prime characteristics p. Characteristic zero was later settled over C by Gardam, Non-trivial units of complex group rings, arXiv:2312.05240; whether Z[P] or Q[P] has non-trivial units remains open."
-  - title: "Local stabilizer codes in three dimensions without string logical operators"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://doi.org/10.1103/PhysRevA.83.042330"
-    type: "paper"
-    relationship: "background"
-    note: "Introduces Haah Cubic Code 1 and its no-strings property for qubits; T2b-T2d formalize algebraic facts about its curve, not string operators."
-  - title: "Commuting Pauli Hamiltonians as maps between free modules"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://doi.org/10.1007/s00220-013-1810-2"
-    type: "paper"
-    relationship: "background"
-    note: "Establishes the Laurent polynomial module formalism extended to non-Abelian R[P] in T2a and T2e."
-  - title: "Amoeba Formulation of Non-Bloch Band Theory in Arbitrary Dimensions"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://doi.org/10.1103/PhysRevX.14.021011"
-    type: "paper"
-    relationship: "background"
-    note: "Formulates multi-dimensional non-Hermitian amoebae and Ronkin functions; T3a and T3b are elementary lemmas, and no amoeba or Ronkin function is defined in Lean."
-  - title: "Homotopy characterization of non-Hermitian Hamiltonians"
-    authors:
-      - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
-    id: "https://doi.org/10.1103/PhysRevB.101.205417"
-    type: "paper"
-    relationship: "background"
-    note: "Connects non-Hermitian multiband loops to braid groups B_n and S_n monodromy; T3c formalizes only S_4 permutation facts, and the monodromy identification is numerical."
-
+- title: 'Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and
+    3D Non-Hermitian B4 Eigenvalue Monodromy (v1.0.0)'
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://github.com/0thernes/promislow-fracton-amoeba
+  type: original-proof
+  relationship: other
+  note: Original formalization and companion AMS-LaTeX preprint first presented in this repository. No
+    external DOI, arXiv ID, or peer review is claimed prior to confirmed external assignment.
+- title: A counterexample to the unit conjecture for group rings
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://doi.org/10.4007/annals.2021.194.3.9
+  type: paper
+  relationship: background
+  note: Constructs the 21-term unit in F_2[P] analyzed in Theorems T1e, T1f, T1g, T2e, and T3c.
+- title: More counterexamples to the unit conjecture for group rings
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://arxiv.org/abs/2106.02147
+  type: paper
+  relationship: background
+  note: Extends Gardam's construction to prime characteristics p. Characteristic zero was later settled
+    over C by Gardam, Non-trivial units of complex group rings, arXiv:2312.05240; whether Z[P] or Q[P]
+    has non-trivial units remains open.
+- title: Local stabilizer codes in three dimensions without string logical operators
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://doi.org/10.1103/PhysRevA.83.042330
+  type: paper
+  relationship: background
+  note: Introduces Haah Cubic Code 1 and its no-strings property for qubits; T2b-T2d formalize algebraic
+    facts about its curve, not string operators.
+- title: Commuting Pauli Hamiltonians as maps between free modules
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://doi.org/10.1007/s00220-013-1810-2
+  type: paper
+  relationship: background
+  note: Establishes the Laurent polynomial module formalism extended to non-Abelian R[P] in T2a and T2e.
+- title: Amoeba Formulation of Non-Bloch Band Theory in Arbitrary Dimensions
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://doi.org/10.1103/PhysRevX.14.021011
+  type: paper
+  relationship: background
+  note: Formulates multi-dimensional non-Hermitian amoebae and Ronkin functions; T3a and T3b are elementary
+    lemmas, and no amoeba or Ronkin function is defined in Lean.
+- title: Homotopy characterization of non-Hermitian Hamiltonians
+  authors:
+  - Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)
+  id: https://doi.org/10.1103/PhysRevB.101.205417
+  type: paper
+  relationship: background
+  note: Connects non-Hermitian multiband loops to braid groups B_n and S_n monodromy; T3c formalizes only
+    S_4 permutation facts, and the monodromy identification is numerical.
 related_formalizations: []
-
 status:
-  scope: >-
-    Zero-Mathlib Lean 4.35.0 proofs of the 15 statements T1a-T3c as described above, plus
-    non-vacuity and adversarial witnesses. Several theorem names describe more than the
-    statement proves (see CLAIMS.md and ERRATA.md). sorry_count 0 refers to the proof files;
-    lean/PalomarChallenge.lean is the comparator challenge template and intentionally has
-    sorry bodies (outside the default build targets). Not formalized inside Lean: Ronkin
-    quadrature values, the 25x25 winding-number grid, complex eigenvalue loop tracking,
-    2-adic inverse supports and code dimensions k_p(L) (all computed in Rust and Python),
-    string logical operators, determinant multiplicativity, and open problems (whether
-    Z[P] or Q[P] has non-trivial units; the unit conjecture is false over C by Gardam,
-    arXiv:2312.05240), general Gottschalk surjunctivity, and code distance of the CSS pairs.
+  scope: 'Zero-Mathlib Lean 4.35.0 proofs of the 15 statements T1a-T3c as described above, plus non-vacuity
+    and adversarial witnesses. Several theorem names describe more than the statement proves (see CLAIMS.md
+    and ERRATA.md). sorry_count 0 refers to the proof files; lean/PalomarChallenge.lean is the comparator
+    challenge template and intentionally has sorry bodies (outside the default build targets). Not formalized
+    inside Lean: Ronkin quadrature values, the 25x25 winding-number grid, complex eigenvalue loop tracking,
+    2-adic inverse supports and code dimensions k_p(L) (all computed in Rust and Python), string logical
+    operators, determinant multiplicativity, and open problems (whether Z[P] or Q[P] has non-trivial units;
+    the unit conjecture is false over C by Gardam, arXiv:2312.05240), general Gottschalk surjunctivity,
+    and code distance of the CSS pairs.'
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
-    - "propext"
-    - "Classical.choice"
-    - "Quot.sound"
+  - propext
+  - Classical.choice
+  - Quot.sound
   main_results:
-    - declaration: "PromislowFracton.Palomar.t1a_promislow_group_torsion_free"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1b_faithful_four_band_bloch_homomorphism"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1c_universal_v4_determinant_invariance"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1d_eight_sign_point_factorization"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1e_gardam_unit_mod4_and_hensel_tower"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1f_exhaustive_no_sign_lift_gardam_support"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t1g_surjunctive_reversible_linear_ca"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t2a_nonabelian_unit_twisted_css_commutation"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: []
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t2b_signed_haah_64_discriminant_classification"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t2c_universal_all_prime_no_strings"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t2d_odd_prime_torsion_and_p23_threshold"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t2e_nonabelian_hw_fracton_codes"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t3a_v4_convex_ronkin_origin_minimum"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t3b_haah_amoeba_and_ep2_jordan"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "lean/comparator.json"
-    - declaration: "PromislowFracton.Palomar.t3c_artin_b4_and_full_s4_monodromy"
-      file: "lean/PalomarSolution.lean"
-      sorry_count: 0
-      axioms: ["propext"]
-      comparator_config: "lean/comparator.json"
-
+  - declaration: PromislowFracton.Palomar.t1a_promislow_group_torsion_free
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1b_faithful_four_band_bloch_homomorphism
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1c_universal_v4_determinant_invariance
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1d_eight_sign_point_factorization
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1e_gardam_unit_mod4_and_hensel_tower
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1f_exhaustive_no_sign_lift_gardam_support
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t1g_surjunctive_reversible_linear_ca
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t2a_nonabelian_unit_twisted_css_commutation
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms: []
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t2b_signed_haah_64_discriminant_classification
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t2c_universal_all_prime_no_strings
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t2d_odd_prime_torsion_and_p23_threshold
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t2e_nonabelian_hw_fracton_codes
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t3a_v4_convex_ronkin_origin_minimum
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t3b_haah_amoeba_and_ep2_jordan
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    comparator_config: lean/comparator.json
+  - declaration: PromislowFracton.Palomar.t3c_artin_b4_and_full_s4_monodromy
+    file: lean/PalomarSolution.lean
+    sorry_count: 0
+    axioms:
+    - propext
+    comparator_config: lean/comparator.json
 automation:
   methods:
-    - method: "manual"
-      notes: "Alexander S. Donahue conceived the research program, directed the mathematical discoveries and adversarial audits, reviewed the statement boundaries (corrected after the 2026-11-26 audit), and bears sole responsibility for the manuscript."
-    - method: "agent"
-      models:
-        - "Gemini (Antigravity)"
-      framework: "Antigravity"
-      notes: >-
-        Assisted with zero-Mathlib Lean 4.35.0 proof engineering, Rust and Python
-        differential verification, 3D WebGL2 studio and blueprint authoring, vector
-        figure production, and manuscript drafting under human supervision.
-
+  - method: manual
+    notes: Alexander S. Donahue conceived the research program, directed the mathematical discoveries
+      and adversarial audits, reviewed the statement boundaries (corrected after the 2026-11-26 audit),
+      and bears sole responsibility for the manuscript.
+  - method: agent
+    models:
+    - Gemini (Antigravity)
+    framework: Antigravity
+    notes: Assisted with zero-Mathlib Lean 4.35.0 proof engineering, Rust and Python differential verification,
+      3D WebGL2 studio and blueprint authoring, vector figure production, and manuscript drafting under
+      human supervision.
 fidelity:
-  divergences: >-
-    Numerical Ronkin quadrature values, 25x25 winding-number maps, and complex eigenvalue
-    loop tracking are labeled numerical_approximation and compared between Rust and Python.
-    Divergences between the stated claims and the Lean statements (2026-11-26 audit):
-    T1c is trivial at integer sign points; T1b injectivity is for psiFormal, not the
-    evaluation map; T1d-T1f use matrices defined separately from Psi; T1e has no Hensel
-    statement; T1f proves failure of a necessary determinant test, not non-invertibility;
-    T2c defines no string operators and needs roots of discriminant-5 quadratics; T2d has
-    no code dimension; T3a is non-strict and has no Ronkin function; T3b and T3c define no
-    amoeba, braid group or monodromy.
-
+  divergences: 'Numerical Ronkin quadrature values, 25x25 winding-number maps, and complex eigenvalue
+    loop tracking are labeled numerical_approximation and compared between Rust and Python. Divergences
+    between the stated claims and the Lean statements (2026-11-26 audit): T1c is trivial at integer sign
+    points; T1b injectivity is for psiFormal, not the evaluation map; T1d-T1f use matrices defined separately
+    from Psi; T1e has no Hensel statement; T1f proves failure of a necessary determinant test, not non-invertibility;
+    T2c defines no string operators and needs roots of discriminant-5 quadratics; T2d has no code dimension;
+    T3a is non-strict and has no Ronkin function; T3b and T3c define no amoeba, braid group or monodromy.'
 review:
-  status: "self-assessed"
-  notes: >-
-    Not externally peer-reviewed. Kernel-checked by Lean (lake build, leanchecker); the 16
-    comparator targets in lean/comparator.json were also accepted by 6 independent kernels
-    via lake comparator --config comparator.json --paranoid (Lean default,
-    leanchecker-paranoid, lean4lean, nanoda_bin, con-leche, con-ron), with 0 warnings,
-    0 proof sorries, 0 native_decide, and NonVacuity & AdversarialTests witnesses.
-    An independent statement audit on 2026-11-26 rebuilt the project (pass) and found the
-    divergences listed under fidelity.
+  status: self-assessed
+  notes: Not externally peer-reviewed. Kernel-checked by Lean (lake build, leanchecker); the 16 comparator
+    targets in lean/comparator.json were also accepted by 6 independent kernels via lake comparator --config
+    comparator.json --paranoid (Lean default, leanchecker-paranoid, lean4lean, nanoda_bin, con-leche,
+    con-ron), with 0 warnings, 0 proof sorries, 0 native_decide, and NonVacuity & AdversarialTests witnesses.
+    An independent statement audit on 2026-11-26 rebuilt the project (pass) and found the divergences
+    listed under fidelity.
