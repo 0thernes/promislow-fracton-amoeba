@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
 # SPDX-License-Identifier: Apache-2.0
-version: v0.4
-release_version: 1.0.0
+version: "v0.4"
+release_version: "1.0.0"
 project:
   name: 'Promislow-Fracton-Amoeba: Hantzsche-Wendt Group Rings, All-Prime Type-II Fracton Codes, and 3D
     Non-Hermitian B4 Eigenvalue Monodromy'
